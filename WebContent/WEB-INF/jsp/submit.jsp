@@ -13,7 +13,15 @@ body {
 	<br>
 	<div style="text-align:center">
 		<h2>
-			Successfully added!<br> <br>
+			<c:choose>
+  				<c:when test="${empty error}">
+  				Successfully added!<br> <br>
+  				</c:when>
+  				<c:otherwise>
+  				Failed to add: ${error}<br> <br>
+  				</c:otherwise>
+			</c:choose>
+			
 		</h2>
 		<h3>
 			<a href="/WebAppTest/">Go back</a>

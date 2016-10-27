@@ -27,6 +27,10 @@ public class Item {
 		// TODO Auto-generated constructor stub
 	}
 	
+	public Item(String uri) {
+		this.uri = uri;
+	}
+	
 	public String getUri() {
 		return uri;
 	}

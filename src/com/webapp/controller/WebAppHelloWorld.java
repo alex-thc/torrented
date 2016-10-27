@@ -44,9 +44,16 @@ public class WebAppHelloWorld {
 	}
 	
 	@RequestMapping(value="/submit", method=RequestMethod.POST)
-    public String itemSubmit(@RequestParam("newItemUri") String newItemUri) {
+    public ModelAndView itemSubmit(@RequestParam("newItemUri") String newItemUri) {
 		System.out.println("Item uri: " + newItemUri + " " + downloadService.getMessage());
-        return "submit";
+		
+		try {
+			downloadService.addItem(new Item(newItemUri));
+		} catch (Exception e) {
+			return new ModelAndView("submit", "error", e.getMessage());
+		}
+		
+		return new ModelAndView("submit", "error", null);
     }
 
 }
