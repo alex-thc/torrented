@@ -13,6 +13,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.webapp.service.DownloadService;
 import com.webapp.service.Item;
 
+import nl.stil4m.transmission.api.domain.TorrentInfo;
+import nl.stil4m.transmission.rpc.RpcException;
+
 @Controller
 public class WebAppHelloWorld {
 	
@@ -32,13 +35,16 @@ public class WebAppHelloWorld {
  
 		ModelAndView model = new ModelAndView("index");
 		
-		List<Item> items = new ArrayList<>();
-		items.add(new Item("1","Done"));
-		items.add(new Item("2","In progress"));
+		List<TorrentInfo> items = null;
+		
+		try {
+			items = downloadService.getAllItems();
+		} catch (RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		model.addObject("itemsList", items);
-		
-		//model.addObject("newItem", new Item());
 		
 		return model;
 	}
@@ -49,7 +55,7 @@ public class WebAppHelloWorld {
 		
 		try {
 			downloadService.addItem(new Item(newItemUri));
-		} catch (Exception e) {
+		} catch (RpcException e) {
 			return new ModelAndView("submit", "error", e.getMessage());
 		}
 		

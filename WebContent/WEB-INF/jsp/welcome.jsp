@@ -21,5 +21,9 @@ body {
 			href='http://crunchify.com/category/spring-mvc/' target='_blank'>here</a>
 		for all Spring MVC, Web Development examples.<br>
 	</div>
+	
+	<video width="320" height="240" controls="controls">
+  		<source src="vids/test.mp4" type="video/mp4" />
+	</video>
 </body>
 </html>

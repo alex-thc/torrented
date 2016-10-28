@@ -28,13 +28,15 @@ body {
 	
 	<table>
     <tr>
-        <th>ID</th>
+        <th>Magnet</th>
         <th>Status</th>
+        <th>Finished</th>
     </tr>
     <c:forEach items="${itemsList}" var="item" varStatus="status">
         <tr>
-            <td>${item.id}</td>
+            <td>${item.magnetLink}</td>
             <td>${item.status}</td>
+            <td>${item.finished}</td>
         </tr>
     </c:forEach>
 </table>
