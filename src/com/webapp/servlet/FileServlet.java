@@ -9,6 +9,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.ServletException;
@@ -20,7 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import com.webapp.service.LinkTable;
+import com.webapp.service.entity.LinkEntry;
+import com.webapp.service.repository.LinkRepository;
+
 
 
 /**
@@ -34,7 +37,7 @@ import com.webapp.service.LinkTable;
 public class FileServlet extends HttpServlet {
 	
 	@Autowired
-	private LinkTable linkTable;
+	private LinkRepository linkRepository;
 
     // Constants ----------------------------------------------------------------------------------
 
@@ -115,10 +118,14 @@ public class FileServlet extends HttpServlet {
         // Get requested file by path info.
         String requestedFile = request.getPathInfo();
         
-        System.out.println("ORIG: " + requestedFile);
+        //System.out.println("ORIG: " + requestedFile);
         // Find out the real link (we need to strip the leading "/")
-        requestedFile = linkTable.releaseLink(Long.valueOf(requestedFile.substring(1)));
-        System.out.println("PARSED: " + requestedFile);
+        //linkTable.releaseLink(Long.valueOf(requestedFile.substring(1)));
+        requestedFile = linkRepository.findOne(UUID.fromString(requestedFile
+        		.substring(1)
+        		.replaceFirst( "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5" )
+        		)).getLink();
+        //System.out.println("PARSED: " + requestedFile);
 
         // Check if file is actually supplied to the request URL.
         if (requestedFile == null) {

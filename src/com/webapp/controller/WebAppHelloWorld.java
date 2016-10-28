@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.webapp.service.DownloadService;
 import com.webapp.service.Item;
-import com.webapp.service.LinkTable;
+import com.webapp.service.entity.LinkEntry;
 import com.webapp.service.repository.LinkRepository;
 
 import nl.stil4m.transmission.api.domain.TorrentInfo;
@@ -27,16 +27,14 @@ public class WebAppHelloWorld {
 	@Autowired
 	private DownloadService downloadService;
 	
-	@Autowired
-	private LinkTable linkTable;
-	
 	@RequestMapping("/welcome")
 	public ModelAndView helloWorld() {
  		
 		String link = "test.mp4";
-		Long id = linkTable.getLink(link); 
+		LinkEntry linkEntry = new LinkEntry(link);
+		linkRepository.save(linkEntry);
 				
-		return new ModelAndView("welcome", "id", id);
+		return new ModelAndView("welcome", "id", linkEntry.getId().toString().replaceAll("-", ""));
 	}
 	
 	@RequestMapping("/")
