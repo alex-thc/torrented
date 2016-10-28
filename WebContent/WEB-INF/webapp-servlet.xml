@@ -18,7 +18,5 @@
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
-	
-    <bean name="downloadService" class="com.webapp.service.DownloadService"/>
  
 </beans>

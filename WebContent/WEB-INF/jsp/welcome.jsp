@@ -8,7 +8,7 @@ body {
 }
 </style>
 </head>
-<body>${message}
+<body>
  
 	<br>
 	<br>
@@ -23,7 +23,7 @@ body {
 	</div>
 	
 	<video width="320" height="240" controls="controls">
-  		<source src="vids/test.mp4" type="video/mp4" />
+  		<source src="vids/${id}" type="video/mp4" />
 	</video>
 </body>
 </html>

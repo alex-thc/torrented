@@ -17,6 +17,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
+import com.webapp.service.LinkTable;
+
+
 /**
  * A file servlet supporting resume of downloads and client-side caching and GZIP of text content.
  * This servlet can also be used for images, client-side caching would become more efficient.
@@ -26,6 +32,9 @@ import javax.servlet.http.HttpServletResponse;
  * @link http://balusc.blogspot.com/2009/02/fileservlet-supporting-resume-and.html
  */
 public class FileServlet extends HttpServlet {
+	
+	@Autowired
+	private LinkTable linkTable;
 
     // Constants ----------------------------------------------------------------------------------
 
@@ -44,6 +53,8 @@ public class FileServlet extends HttpServlet {
      * @see HttpServlet#init().
      */
     public void init() throws ServletException {
+    	
+    	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
 
         // Get base path (path to get all resources from) as init parameter.
         this.basePath = getInitParameter("basePath");
@@ -103,6 +114,11 @@ public class FileServlet extends HttpServlet {
 
         // Get requested file by path info.
         String requestedFile = request.getPathInfo();
+        
+        System.out.println("ORIG: " + requestedFile);
+        // Find out the real link (we need to strip the leading "/")
+        requestedFile = linkTable.releaseLink(Long.valueOf(requestedFile.substring(1)));
+        System.out.println("PARSED: " + requestedFile);
 
         // Check if file is actually supplied to the request URL.
         if (requestedFile == null) {

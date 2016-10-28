@@ -12,6 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.webapp.service.DownloadService;
 import com.webapp.service.Item;
+import com.webapp.service.LinkTable;
+import com.webapp.service.repository.LinkRepository;
 
 import nl.stil4m.transmission.api.domain.TorrentInfo;
 import nl.stil4m.transmission.rpc.RpcException;
@@ -20,14 +22,21 @@ import nl.stil4m.transmission.rpc.RpcException;
 public class WebAppHelloWorld {
 	
 	@Autowired
-	DownloadService downloadService;
+	private LinkRepository linkRepository;
+	
+	@Autowired
+	private DownloadService downloadService;
+	
+	@Autowired
+	private LinkTable linkTable;
 	
 	@RequestMapping("/welcome")
 	public ModelAndView helloWorld() {
  		
-		String message = "<br><div style='text-align:center;'>"
-				+ "<h3>********** Hello World, Spring MVC Tutorial</h3>This message is coming from CrunchifyHelloWorld.java **********</div><br><br>";
-		return new ModelAndView("welcome", "message", message);
+		String link = "test.mp4";
+		Long id = linkTable.getLink(link); 
+				
+		return new ModelAndView("welcome", "id", id);
 	}
 	
 	@RequestMapping("/")
