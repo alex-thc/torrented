@@ -2,6 +2,7 @@ package com.webapp.service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.stil4m.transmission.api.TransmissionRpcClient;
 import nl.stil4m.transmission.api.domain.AddTorrentInfo;
 import nl.stil4m.transmission.api.domain.AddedTorrentInfo;
+import nl.stil4m.transmission.api.domain.File;
 import nl.stil4m.transmission.api.domain.TorrentInfo;
 import nl.stil4m.transmission.api.domain.TorrentInfoCollection;
 import nl.stil4m.transmission.rpc.RpcClient;
@@ -50,30 +52,36 @@ public class DownloadService {
 		//TODO: store torrent information (new store class and new entity class)
 	}
 	
-	public List<TorrentInfo> getAllItems() throws RpcException {
+	public List<Item> getAllItems() throws RpcException {
 		List<TorrentInfo> torrents = trClient.getAllTorrentsInfo().getTorrents();
+		List<Item> items = new ArrayList<>();
 		
-//		for(int i=0; i<torrents.size(); i++) {
-//			TorrentInfo info = torrents.get(i);
-//			
-//			System.out.println("Magnet: " + info.getMagnetLink());
-//			System.out.println("addedDate: " + new Date(info.getAddedDate()*1000));
-//			System.out.println("error: " + info.getError());
-//			System.out.println("errorString: " + info.getErrorString());
-//			System.out.println("eta: " + info.getError());
-//			System.out.println("id: " + info.getId());
-//			System.out.println("finished: " + info.getFinished());
-//			System.out.println("stalled: " + info.getStalled());
-//			System.out.println("magnet: " + info.getMagnetLink());
-//			System.out.println("name: " + info.getName());
-//			System.out.println("status: " + info.getStatus());
-//			System.out.println("totalSize: " + info.getTotalSize());
-//			System.out.println("webseedsSendingToUs: " + info.getWebseedsSendingToUs());
-//			
-//			System.out.println("----");
-//		}
+		for(int i=0; i<torrents.size(); i++) {
+			TorrentInfo info = torrents.get(i);
+			
+			System.out.println("Magnet: " + info.getMagnetLink());
+			System.out.println("addedDate: " + new Date(info.getAddedDate()*1000));
+			System.out.println("error: " + info.getError());
+			System.out.println("errorString: " + info.getErrorString());
+			System.out.println("eta: " + info.getError());
+			System.out.println("id: " + info.getId());
+			System.out.println("finished: " + info.getFinished());
+			System.out.println("stalled: " + info.getStalled());
+			System.out.println("magnet: " + info.getMagnetLink());
+			System.out.println("name: " + info.getName());
+			System.out.println("status: " + info.getStatus());
+			System.out.println("totalSize: " + info.getTotalSize());
+			System.out.println("webseedsSendingToUs: " + info.getWebseedsSendingToUs());
+			
+			for(File file : info.getFiles())
+				System.out.println("torrent file: " + file.getName());
+			
+			System.out.println("----");
+			
+			items.add(Item.fromTorrentInfo(info));
+		}
 		
-		return torrents;
+		return items;
 	}
 	
 	public String getMessage() {

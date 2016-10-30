@@ -31,12 +31,14 @@ body {
         <th>Magnet</th>
         <th>Status</th>
         <th>Finished</th>
+        <th>Files</th>
     </tr>
     <c:forEach items="${itemsList}" var="item" varStatus="status">
         <tr>
-            <td>${item.magnetLink}</td>
+            <td>${item.uri}</td>
             <td>${item.status}</td>
             <td>${item.finished}</td>
+            <td><a href="welcome.html?file=${item.fileNames[0]}">${item.fileNames[0]}</a></td>
         </tr>
     </c:forEach>
 </table>

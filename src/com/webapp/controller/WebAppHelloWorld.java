@@ -28,10 +28,9 @@ public class WebAppHelloWorld {
 	private DownloadService downloadService;
 	
 	@RequestMapping("/welcome")
-	public ModelAndView helloWorld() {
- 		
-		String link = "test.mp4";
-		LinkEntry linkEntry = new LinkEntry(link);
+	public ModelAndView helloWorld(@RequestParam("file") String file) {
+	
+		LinkEntry linkEntry = new LinkEntry(file);
 		linkRepository.save(linkEntry);
 				
 		return new ModelAndView("welcome", "id", linkEntry.getId().toString().replaceAll("-", ""));
@@ -42,7 +41,7 @@ public class WebAppHelloWorld {
  
 		ModelAndView model = new ModelAndView("index");
 		
-		List<TorrentInfo> items = null;
+		List<Item> items = null;
 		
 		try {
 			items = downloadService.getAllItems();
