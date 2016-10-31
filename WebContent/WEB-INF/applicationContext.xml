@@ -2,11 +2,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:mongo="http://www.springframework.org/schema/data/mongo"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation=
        "http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/data/mongo
-        http://www.springframework.org/schema/data/mongo/spring-mongo-1.8.xsd"
+        http://www.springframework.org/schema/data/mongo/spring-mongo-1.8.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-4.3.xsd"
         >
 
 <!--     <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -25,6 +28,7 @@
      
      <!-- <bean name="linkTable" class="com.webapp.service.LinkTable"/> -->
      <bean name="downloadService" class="com.webapp.service.DownloadService"/>
+     
      <mongo:mongo host="localhost" port="27017"/>
      
      <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
@@ -32,7 +36,14 @@
     	<constructor-arg value="webapp" />
   	</bean>
 
-  <mongo:repositories base-package="com.webapp.service.repository" />
+    <mongo:repositories base-package="com.webapp.service.repository" />
+    
+    <bean name="convertService" class="com.webapp.service.ConvertService"/>
      
+	<task:scheduled-tasks scheduler="myScheduler">
+    	<task:scheduled ref="convertService" method="runConversionRound" fixed-delay="5000"/>
+	</task:scheduled-tasks>
+
+	<task:scheduler id="myScheduler" pool-size="4"/>
 
 </beans>
