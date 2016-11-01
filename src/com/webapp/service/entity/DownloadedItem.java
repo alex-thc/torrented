@@ -35,6 +35,17 @@ public class DownloadedItem {
     
     //video files
     private List<String> videoFiles;
+    
+    //being processed by the converter
+    private boolean isProcessing;
+    
+	public boolean isProcessing() {
+		return isProcessing;
+	}
+
+	public void setProcessing(boolean isProcessing) {
+		this.isProcessing = isProcessing;
+	}
 
 	public String getMagnetLink() {
 		return magnetLink;
