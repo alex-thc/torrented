@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.spel.ast.Ternary;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,7 +42,7 @@ public class WebAppHelloWorld {
  
 		ModelAndView model = new ModelAndView("index");
 		
-		List<Item> items = null;
+		List<TorrentInfo> items = null;
 		
 		try {
 			items = downloadService.getAllItems();

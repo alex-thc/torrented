@@ -13,13 +13,13 @@ public class ConvertService {
 	public void runConversionRound() {
 		System.out.println("CONVERT!");
 		
-		List<Item> items = null;
+		/*List<Item> items = null;
 		
 		try {
 			items = downloadService.getAllItems();
 		} catch (RpcException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 }

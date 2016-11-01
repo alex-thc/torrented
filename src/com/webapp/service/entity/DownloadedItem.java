@@ -11,7 +11,7 @@ import nl.stil4m.transmission.api.domain.File;
 import nl.stil4m.transmission.api.domain.TorrentInfo;
 
 @Document
-public class Item {
+public class DownloadedItem {
 	//fields from TorrentInfo
 	private String uri;
 	private Date addedDate;
@@ -139,12 +139,12 @@ public class Item {
 		this.videoFiles = videoFiles;
 	}
 
-	public Item() {
+	public DownloadedItem() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static Item fromTorrentInfo(TorrentInfo info) {
-		Item item = new Item();
+	public static DownloadedItem fromTorrentInfo(TorrentInfo info) {
+		DownloadedItem item = new DownloadedItem();
 		
 		item.setUri(info.getMagnetLink());
 		item.setAddedDate(new Date(info.getAddedDate()*1000));

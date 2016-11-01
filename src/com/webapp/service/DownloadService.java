@@ -58,9 +58,9 @@ public class DownloadService {
 		//TODO: store torrent information (new store class and new entity class)
 	}
 	
-	public List<Item> getAllItems() throws RpcException {
+	public List<TorrentInfo> getAllItems() throws RpcException {
 		List<TorrentInfo> torrents = trClient.getAllTorrentsInfo().getTorrents();
-		List<Item> items = new ArrayList<>();
+		//List<Item> items = new ArrayList<>();
 		
 		for(int i=0; i<torrents.size(); i++) {
 			TorrentInfo info = torrents.get(i);
@@ -84,10 +84,10 @@ public class DownloadService {
 			
 			System.out.println("----");
 			
-			items.add(Item.fromTorrentInfo(info));
+			//items.add(Item.fromTorrentInfo(info));
 		}
 		
-		return items;
+		return torrents;
 	}
 	
 	public String getMessage() {
@@ -101,7 +101,15 @@ public class DownloadService {
 	}
 	
 	//thread for adding new items to the db after their download is finished
-	public void checkFinishedDownloads() {
-		System.out.println("CHECK!");
+	public void checkFinishedDownloads() throws RpcException {
+		List<TorrentInfo> torrents = trClient.getAllTorrentsInfo().getTorrents();
+		
+		for(int i=0; i<torrents.size(); i++) {
+			TorrentInfo info = torrents.get(i);
+			
+			if (info.getStatus() == 6 /*seeding*/ || info.getFinished()) {
+				
+			}
+		}
 	}
 }
