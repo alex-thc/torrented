@@ -22,9 +22,6 @@ public class ConvertService {
 	
 	public void runConversionRound() {
 		
-		if (itemRepository == null)
-			System.out.println("CONVERT! xxx");
-		
 		DownloadedItem item = itemRepository.getAndLockItemToConvert();
 		if (item == null) {
 			//System.out.println("CONVERT: nothing to do");
