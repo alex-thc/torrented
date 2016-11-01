@@ -13,7 +13,7 @@ import nl.stil4m.transmission.api.domain.TorrentInfo;
 @Document
 public class DownloadedItem {
 	//fields from TorrentInfo
-	private String uri;
+	private String magnetLink;
 	private Date addedDate;
 	private long error;
 	private String errorString;
@@ -24,23 +24,24 @@ public class DownloadedItem {
     private Long status;
     private Long totalSize;
     
-    //flagged for conversion
-    boolean needsConv;
-    
     //all files in the torrent
     private List<String> downloadedFiles;
-    //files created by the conversion process
+    
+    //files that need conversion
+    private List<String> filesToConvert;
+
+	//files created by the conversion process
     private List<String> convertedFiles;
     
     //video files
     private List<String> videoFiles;
 
-	public String getUri() {
-		return uri;
+	public String getMagnetLink() {
+		return magnetLink;
 	}
 
-	public void setUri(String uri) {
-		this.uri = uri;
+	public void setMagnetLink(String magnetLink) {
+		this.magnetLink = magnetLink;
 	}
 
 	public Date getAddedDate() {
@@ -107,12 +108,12 @@ public class DownloadedItem {
 		this.totalSize = totalSize;
 	}
 
-	public boolean isNeedsConv() {
-		return needsConv;
+    public List<String> getFilesToConvert() {
+		return filesToConvert;
 	}
 
-	public void setNeedsConv(boolean needsConv) {
-		this.needsConv = needsConv;
+	public void setFilesToConvert(List<String> filesToConvert) {
+		this.filesToConvert = filesToConvert;
 	}
 
 	public List<String> getDownloadedFiles() {
@@ -146,7 +147,7 @@ public class DownloadedItem {
 	public static DownloadedItem fromTorrentInfo(TorrentInfo info) {
 		DownloadedItem item = new DownloadedItem();
 		
-		item.setUri(info.getMagnetLink());
+		item.setMagnetLink(info.getMagnetLink());
 		item.setAddedDate(new Date(info.getAddedDate()*1000));
 		item.setError(info.getError());
 		item.setErrorString(info.getErrorString());
@@ -157,10 +158,27 @@ public class DownloadedItem {
 		item.setTotalSize(info.getTotalSize());
 		
 		if (info.getFiles() != null) {
-			List<String> files = new ArrayList<>();
-		    for(File file : info.getFiles())
-			    files.add(file.getName());
-		    item.setDownloadedFiles(files);
+			List<String> downloadedFiles = new ArrayList<>();
+			List<String> videoFiles = new ArrayList<>();
+			List<String> filesToConvert = new ArrayList<>();
+			
+		    for(File file : info.getFiles()) {
+		    	downloadedFiles.add(file.getName());
+		    	
+		    	if (file.getName().matches("^.+?\\.mp4$")) {
+		    		videoFiles.add(file.getName());
+				}
+		    	
+		    	if (file.getName().matches("^.+?\\.(avi|mkv)$")) {
+		    		filesToConvert.add(file.getName());
+				}
+		    }
+		    	
+		    item.setDownloadedFiles(downloadedFiles);
+		    if (! videoFiles.isEmpty())
+		    	item.setVideoFiles(videoFiles);
+		    if (! filesToConvert.isEmpty())
+		    	item.setVideoFiles(filesToConvert);
 		}
 		
 		return item;

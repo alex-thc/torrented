@@ -3,13 +3,16 @@
 	   xmlns:mongo="http://www.springframework.org/schema/data/mongo"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation=
        "http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/data/mongo
         http://www.springframework.org/schema/data/mongo/spring-mongo-1.8.xsd
         http://www.springframework.org/schema/task
-        http://www.springframework.org/schema/task/spring-task-4.3.xsd"
+        http://www.springframework.org/schema/task/spring-task-4.3.xsd
+        http://www.springframework.org/schema/context
+	    http://www.springframework.org/schema/context/spring-context-2.5.xsd"
         >
 
 <!--     <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -26,7 +29,6 @@
         <property name="maxIdle"><value>10</value></property>
      </bean> -->
      
-     <!-- <bean name="linkTable" class="com.webapp.service.LinkTable"/> -->
      <bean name="downloadService" class="com.webapp.service.DownloadService"/>
      
      <mongo:mongo host="localhost" port="27017"/>
@@ -42,9 +44,14 @@
      
 	<task:scheduled-tasks scheduler="myScheduler">
     	<task:scheduled ref="convertService" method="runConversionRound" fixed-delay="10000"/>
+	</task:scheduled-tasks>
+	
+    <task:scheduled-tasks scheduler="myScheduler1">
     	<task:scheduled ref="downloadService" method="checkFinishedDownloads" fixed-delay="5000"/>
 	</task:scheduled-tasks>
 
 	<task:scheduler id="myScheduler" pool-size="4"/>
+	<task:scheduler id="myScheduler1" pool-size="1"/>
 
+	<context:component-scan base-package="com.webapp.service" />
 </beans>

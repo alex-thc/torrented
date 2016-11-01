@@ -7,8 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.repository.ItemRepository;
 
 import nl.stil4m.transmission.api.TransmissionRpcClient;
@@ -16,11 +19,11 @@ import nl.stil4m.transmission.api.domain.AddTorrentInfo;
 import nl.stil4m.transmission.api.domain.AddedTorrentInfo;
 import nl.stil4m.transmission.api.domain.File;
 import nl.stil4m.transmission.api.domain.TorrentInfo;
-import nl.stil4m.transmission.api.domain.TorrentInfoCollection;
 import nl.stil4m.transmission.rpc.RpcClient;
 import nl.stil4m.transmission.rpc.RpcConfiguration;
 import nl.stil4m.transmission.rpc.RpcException;
 
+@Service
 public class DownloadService {
 		
 	private static String host = "http://localhost:9091/transmission/rpc";
@@ -31,7 +34,7 @@ public class DownloadService {
 	@Autowired
 	private ItemRepository itemRepository;
 	
-	public DownloadService() {
+	public DownloadService() {		
 		RpcConfiguration rpcConfig = new RpcConfiguration();
 		try {
 			rpcConfig.setHost(new URI(host));
@@ -109,6 +112,9 @@ public class DownloadService {
 			
 			if (info.getStatus() == 6 /*seeding*/ || info.getFinished()) {
 				
+				DownloadedItem item = DownloadedItem.fromTorrentInfo(info);
+				
+				itemRepository.save(item);
 			}
 		}
 	}

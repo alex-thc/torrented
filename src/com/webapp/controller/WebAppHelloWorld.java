@@ -13,7 +13,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.webapp.service.DownloadService;
 import com.webapp.service.Item;
+import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.entity.LinkEntry;
+import com.webapp.service.repository.ItemRepository;
 import com.webapp.service.repository.LinkRepository;
 
 import nl.stil4m.transmission.api.domain.TorrentInfo;
@@ -27,6 +29,9 @@ public class WebAppHelloWorld {
 	
 	@Autowired
 	private DownloadService downloadService;
+	
+	@Autowired
+	private ItemRepository itemRepository;
 	
 	@RequestMapping("/welcome")
 	public ModelAndView helloWorld(@RequestParam("file") String file) {
