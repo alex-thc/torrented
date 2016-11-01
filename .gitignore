@@ -3,3 +3,5 @@
 /db/
 /.classpath
 /.project
+/.DS_Store
+/HandBrakeCLI

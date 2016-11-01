@@ -41,7 +41,8 @@
     <bean name="convertService" class="com.webapp.service.ConvertService"/>
      
 	<task:scheduled-tasks scheduler="myScheduler">
-    	<task:scheduled ref="convertService" method="runConversionRound" fixed-delay="5000"/>
+    	<task:scheduled ref="convertService" method="runConversionRound" fixed-delay="10000"/>
+    	<task:scheduled ref="downloadService" method="checkFinishedDownloads" fixed-delay="5000"/>
 	</task:scheduled-tasks>
 
 	<task:scheduler id="myScheduler" pool-size="4"/>

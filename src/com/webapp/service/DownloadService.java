@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.webapp.service.repository.ItemRepository;
 
 import nl.stil4m.transmission.api.TransmissionRpcClient;
 import nl.stil4m.transmission.api.domain.AddTorrentInfo;
@@ -24,6 +27,9 @@ public class DownloadService {
 	private static String downloadDir = "/tmp";
 	
 	private static TransmissionRpcClient trClient;
+	
+	@Autowired
+	private ItemRepository itemRepository;
 	
 	public DownloadService() {
 		RpcConfiguration rpcConfig = new RpcConfiguration();
@@ -92,5 +98,10 @@ public class DownloadService {
 			e.printStackTrace();
 			return "Failed to get stats!";
 		}
+	}
+	
+	//thread for adding new items to the db after their download is finished
+	public void checkFinishedDownloads() {
+		System.out.println("CHECK!");
 	}
 }
