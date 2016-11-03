@@ -27,7 +27,7 @@ import nl.stil4m.transmission.rpc.RpcException;
 public class DownloadService {
 		
 	private static String host = "http://localhost:9091/transmission/rpc";
-	private static String downloadDir = "/tmp";
+	private static String downloadDir = "/data";
 	
 	private static TransmissionRpcClient trClient;
 	

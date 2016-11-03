@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<title>Alex&Yulia's video corner</title>
+<title>MongoDB Test Application</title>
 <style type="text/css">
 body {
 	background-image: url('http://crunchify.com/bg.png');
@@ -13,7 +13,7 @@ body {
 	<br>
 	<div style="text-align:center">
 		<h2>
-			Hey You..!! We proudly present this nice tool for your entertainment!<br> <br>
+			Hey You..!! This is my test MongoDB Java Spring MVC app with different integrations<br> <br>
 		</h2>
 	</div>
 	

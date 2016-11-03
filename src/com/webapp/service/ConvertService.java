@@ -17,7 +17,7 @@ public class ConvertService {
 	@Autowired
 	private ItemRepository itemRepository;
 	
-	private static final String BASE_PATH = "/Users/alexander/tmp";
+	private static final String BASE_PATH = "/data";
 	private static final String OUTPUT_PATH = "convert";
 	
 	public void runConversionRound() {
