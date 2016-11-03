@@ -47,16 +47,19 @@ public class WebAppHelloWorld {
  
 		ModelAndView model = new ModelAndView("index");
 		
-		List<TorrentInfo> items = null;
+		List<TorrentInfo> activeItems = null;
 		
 		try {
-			items = downloadService.getAllItems();
+			activeItems = downloadService.getAllItems();
 		} catch (RpcException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		model.addObject("itemsList", items);
+		model.addObject("activeItemsList", activeItems);
+		
+		List<DownloadedItem> downloadedItems = itemRepository.findAll();
+		model.addObject("downloadedItemsList", downloadedItems);
 		
 		return model;
 	}

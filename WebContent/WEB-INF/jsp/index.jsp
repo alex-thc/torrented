@@ -26,21 +26,54 @@ body {
       <input type="submit" value="Submit" />
     </form>
 	
+	<h3>
+		Active downloads
+	</h3>
 	<table>
     <tr>
         <th>Magnet</th>
         <th>Status</th>
         <th>Finished</th>
-        <th>Files</th>
     </tr>
-    <c:forEach items="${itemsList}" var="item" varStatus="status">
+    <c:forEach items="${activeItemsList}" var="item" varStatus="status">
         <tr>
             <td>${item.magnetLink}</td>
             <td>${item.status}</td>
             <td>${item.finished}</td>
-            <%-- <td><a href="welcome.html?file=${item.fileNames[0]}">${item.fileNames[0]}</a></td> --%>
         </tr>
     </c:forEach>
-</table>
+    </table>
+    
+    <h3>
+		Videos
+	</h3>
+	<table>
+    <tr>
+        <th>Name</th>
+        <th>Added Date</th>
+        <th>Status</th>
+        <th>Files</th>
+    </tr>
+    <c:forEach items="${downloadedItemsList}" var="item" varStatus="status">
+        <tr>
+            <td>${item.name}</td>
+            <td>${item.addedDate}</td>
+            <td>
+            	<c:choose>
+            		<c:when test="${item.processing}">
+        				Processing
+    				</c:when>
+    				<c:when test="${not empty item.filesToConvert}">
+        				Needs conversion
+    				</c:when>
+    				<c:otherwise>
+        				Ready
+    				</c:otherwise>
+				</c:choose>
+            </td>
+            <td><a href="welcome.html?file=${item.videoFiles[0]}">${item.videoFiles[0]}</a></td>
+        </tr>
+    </c:forEach>
+	</table>
 </body>
 </html>
