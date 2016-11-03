@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<title>Spring MVC Tutorial Series by Crunchify.com</title>
+<title>Alex&Yulia's video corner</title>
 <style type="text/css">
 body {
 	background-image: url('http://crunchify.com/bg.png');
@@ -13,14 +13,13 @@ body {
 	<br>
 	<div style="text-align:center">
 		<h2>
-			Hey You..!! This is your 1st Spring MCV Tutorial..<br> <br>
+			Hey You..!! We proudly present this nice tool for your entertainment!<br> <br>
 		</h2>
-		<h3>
-			<a href="welcome.html">Click here to See Welcome Message... </a>(to
-			check Spring MVC Controller... @RequestMapping("/welcome"))
-		</h3>
 	</div>
 	
+	<h3>
+		Add a new item
+	</h3>
 	<form action="submit.html" method="POST">
       <input type="text" id="newItemUri" name="newItemUri" />
       <input type="submit" value="Submit" />
