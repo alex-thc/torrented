@@ -9,19 +9,23 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.spel.ast.Ternary;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.webapp.service.DownloadService;
 import com.webapp.service.Item;
 import com.webapp.service.LoginInfo;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.entity.LinkEntry;
+import com.webapp.service.entity.UserEntry;
 import com.webapp.service.repository.ItemRepository;
 import com.webapp.service.repository.LinkRepository;
+import com.webapp.service.repository.UserRepository;
 
 import nl.stil4m.transmission.api.domain.TorrentInfo;
 import nl.stil4m.transmission.rpc.RpcException;
@@ -38,6 +42,9 @@ public class WebAppHelloWorld {
 	@Autowired
 	private ItemRepository itemRepository;
 	
+	@Autowired
+	private UserRepository userRepository;
+	
 	@RequestMapping("/welcome")
 	public ModelAndView helloWorld(@RequestParam("file") String file) {
 	
@@ -48,8 +55,12 @@ public class WebAppHelloWorld {
 	}
 	
 	@RequestMapping("/")
-	public ModelAndView mainView() {
+	public ModelAndView mainView(@CookieValue(value = "authenticated", defaultValue = "false") String authCookie) {
  
+		if (! authCookie.equals("true")) {
+			return new ModelAndView(new RedirectView("login"));
+		}
+		
 		ModelAndView model = new ModelAndView("index");
 		
 		List<TorrentInfo> activeItems = null;
@@ -94,6 +105,16 @@ public class WebAppHelloWorld {
 	@RequestMapping(value="/login",method=RequestMethod.POST)
 	public ModelAndView executeLogin(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("loginInfo")LoginInfo loginInfo)
 	{
+		UserEntry userInfo = userRepository.findOne(loginInfo.getUsername());
+		
+		if (userInfo == null || ! userInfo.getPassword().equals(loginInfo.getPassword())) {
+			System.out.println("Failure to authenticate as " + loginInfo.getUsername());
+			ModelAndView model = new ModelAndView("login");
+			model.addObject("loginInfo", loginInfo);
+			request.setAttribute("message", "Invalid credentials!!");
+			return model;
+		}
+		
 /*		ModelAndView model= null;
 		try
 		{
@@ -118,6 +139,6 @@ model.addObject("loginBean", loginBean);
 		}
 
 		return model;*/
-		return mainView();
+		return mainView("true");
 	}
 }
