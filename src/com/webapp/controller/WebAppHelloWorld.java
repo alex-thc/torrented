@@ -3,6 +3,7 @@ package com.webapp.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -115,30 +116,9 @@ public class WebAppHelloWorld {
 			return model;
 		}
 		
-/*		ModelAndView model= null;
-		try
-		{
-			boolean isValidUser = loginDelegate.isValidUser(loginBean.getUsername(), loginBean.getPassword());
-			if(isValidUser)
-			{
-				System.out.println("User Login Successful");
-				request.setAttribute("loggedInUser", loginBean.getUsername());
-				model = new ModelAndView("welcome");
-			}
-			else
-			{
-				model = new ModelAndView("login");
-model.addObject("loginBean", loginBean);
-				request.setAttribute("message", "Invalid credentials!!");
-			}
-
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		return model;*/
+		Cookie authCookie = new Cookie("authenticated", "true");
+		authCookie.setMaxAge(3600*72);
+		response.addCookie(authCookie);
 		return mainView("true");
 	}
 }
