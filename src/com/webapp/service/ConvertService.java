@@ -1,6 +1,7 @@
 package com.webapp.service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +35,10 @@ public class ConvertService {
 			
 			String out = fileName + ".mp4";
 			String convertCmd = String.format( //TODO: should we add -O here? (capital o)
-				"HandBrakeCLI -Z iPad -i %s -o %s 2>&1 >/tmp/handbrake.log",
+				"HandBrakeCLI -Z iPad -i %s -o %s",
 				BASE_PATH + "/" + fileName, BASE_PATH + "/" + out);
 			try {
-				executeCommand(convertCmd);
+				executeCommand(convertCmd,"/tmp/handbrake.log");
 				convertedFiles.add(out);
 			} catch (ShellCommandException e) {
 				System.out.println("CONVERT: " + e.getMessage());
@@ -56,21 +57,18 @@ public class ConvertService {
 		itemRepository.save(item);
 	}
 	
-	private String executeCommand(String command) throws ShellCommandException {
+	private String executeCommand(String command, String logFile) throws ShellCommandException {
 
 		StringBuffer output = new StringBuffer();
-
+		
+		ProcessBuilder builder = new ProcessBuilder(command);
+		builder.redirectOutput(new File(logFile));
+		builder.redirectError(new File(logFile));
 		Process p;
-		try {
-			p = Runtime.getRuntime().exec(command);
-			p.waitFor();
-			BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-            String line = "";
-			while ((line = reader.readLine())!= null) {
-				output.append(line + "\n");
-			}
+		try {
+			p = builder.start();
+			p.waitFor();
 
 		} catch (Exception e) {
 			e.printStackTrace();
