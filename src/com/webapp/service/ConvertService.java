@@ -18,7 +18,6 @@ public class ConvertService {
 	private ItemRepository itemRepository;
 	
 	private static final String BASE_PATH = "/data";
-	private static final String OUTPUT_PATH = "convert";
 	
 	public void runConversionRound() {
 		
@@ -33,7 +32,7 @@ public class ConvertService {
 		for(String fileName : item.getFilesToConvert()) {
 			System.out.println("CONVERT: converting " + fileName);
 			
-			String out = OUTPUT_PATH + "/" + fileName + ".mp4";
+			String out = fileName + ".mp4";
 			String convertCmd = String.format( //TODO: should we add -O here? (capital o)
 				"HandBrakeCLI -Z iPad -i %s -o %s 2>&1",
 				BASE_PATH + "/" + fileName, BASE_PATH + "/" + out);
