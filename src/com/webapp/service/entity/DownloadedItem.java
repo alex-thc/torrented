@@ -189,7 +189,7 @@ public class DownloadedItem {
 		    if (! videoFiles.isEmpty())
 		    	item.setVideoFiles(videoFiles);
 		    if (! filesToConvert.isEmpty())
-		    	item.setVideoFiles(filesToConvert);
+		    	item.setFilesToConvert(filesToConvert);
 		}
 		
 		return item;

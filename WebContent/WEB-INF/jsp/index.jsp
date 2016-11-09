@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
 <head>
@@ -40,8 +41,8 @@ body {
     <c:forEach items="${activeItemsList}" var="item" varStatus="status">
         <tr>
             <td>${item.magnetLink}</td>
-            <td>${item.eta/60000}</td>
-            <td>${item.percentDone}</td>
+            <td><fmt:formatNumber type="number" maxFractionDigits="1" value="${item.eta/60}" /></td>
+            <td><fmt:formatNumber type="number" maxFractionDigits="1" value="${item.percentDone*100}" /></td>
             <td>${item.rateDownload}</td>
             <td>${item.status}</td>
             <td>${item.finished}</td>

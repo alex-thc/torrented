@@ -52,7 +52,7 @@ public class ConvertService {
 				item.setVideoFiles(new ArrayList<String>());
 			item.getVideoFiles().addAll(convertedFiles);
 		}
-		item.setFilesToConvert(null);
+		item.getFilesToConvert().removeAll(convertedFiles);
 		item.setProcessing(false);
 		itemRepository.save(item);
 	}
