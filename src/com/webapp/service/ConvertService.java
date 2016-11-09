@@ -34,7 +34,7 @@ public class ConvertService {
 			
 			String out = fileName + ".mp4";
 			String convertCmd = String.format( //TODO: should we add -O here? (capital o)
-				"HandBrakeCLI -Z iPad -i %s -o %s 2>&1",
+				"HandBrakeCLI -Z iPad -i %s -o %s 2>&1 >/tmp/handbrake.log",
 				BASE_PATH + "/" + fileName, BASE_PATH + "/" + out);
 			try {
 				executeCommand(convertCmd);
