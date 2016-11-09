@@ -29,17 +29,19 @@ public class ConvertService {
 		}
 		
 		List<String> convertedFiles = new ArrayList<>();
+		List<String> tmp = new ArrayList<>();
 		
 		for(String fileName : item.getFilesToConvert()) {
 			System.out.println("CONVERT: converting " + fileName);
 			
 			String out = fileName + ".mp4";
 			String convertCmd = String.format( //TODO: should we add -O here? (capital o)
-				"HandBrakeCLI -Z iPad -i %s -o %s",
+				"/usr/bin/HandBrakeCLI -Z iPad -i %s -o %s",
 				BASE_PATH + "/" + fileName, BASE_PATH + "/" + out);
 			try {
 				executeCommand(convertCmd,"/tmp/handbrake.log");
 				convertedFiles.add(out);
+				tmp.add(fileName);
 			} catch (ShellCommandException e) {
 				System.out.println("CONVERT: " + e.getMessage());
 				System.out.println("CONVERT: " + e.getCmdLine());
@@ -52,7 +54,7 @@ public class ConvertService {
 				item.setVideoFiles(new ArrayList<String>());
 			item.getVideoFiles().addAll(convertedFiles);
 		}
-		item.getFilesToConvert().removeAll(convertedFiles);
+		item.getFilesToConvert().removeAll(tmp);
 		item.setProcessing(false);
 		itemRepository.save(item);
 	}
@@ -61,7 +63,7 @@ public class ConvertService {
 
 		StringBuffer output = new StringBuffer();
 		
-		ProcessBuilder builder = new ProcessBuilder(command);
+		ProcessBuilder builder = new ProcessBuilder("bash", "-c", command);
 		builder.redirectOutput(new File(logFile));
 		builder.redirectError(new File(logFile));
 		Process p;
