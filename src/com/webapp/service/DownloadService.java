@@ -57,6 +57,7 @@ public class DownloadService {
 		AddTorrentInfo addTorrentInfo = new AddTorrentInfo();
 		addTorrentInfo.setFilename(item.getUri());
 		addTorrentInfo.setDownloadDir(downloadDir);
+		addTorrentInfo.setPaused(false);
 		
 		AddedTorrentInfo addedInfo = trClient.addTorrent(addTorrentInfo);
 		
