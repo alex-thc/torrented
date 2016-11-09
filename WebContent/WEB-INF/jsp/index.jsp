@@ -31,12 +31,18 @@ body {
 	<table>
     <tr>
         <th>Magnet</th>
+        <th>Eta(min)</th>
+        <th>%done</th>
+        <th>Rate</th>
         <th>Status</th>
         <th>Finished</th>
     </tr>
     <c:forEach items="${activeItemsList}" var="item" varStatus="status">
         <tr>
             <td>${item.magnetLink}</td>
+            <td>${item.eta/60000}</td>
+            <td>${item.percentDone}</td>
+            <td>${item.rateDownload}</td>
             <td>${item.status}</td>
             <td>${item.finished}</td>
         </tr>

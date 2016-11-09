@@ -18,7 +18,9 @@ import nl.stil4m.transmission.api.TransmissionRpcClient;
 import nl.stil4m.transmission.api.domain.AddTorrentInfo;
 import nl.stil4m.transmission.api.domain.AddedTorrentInfo;
 import nl.stil4m.transmission.api.domain.File;
+import nl.stil4m.transmission.api.domain.RemoveTorrentInfo;
 import nl.stil4m.transmission.api.domain.TorrentInfo;
+import nl.stil4m.transmission.api.domain.ids.Ids;
 import nl.stil4m.transmission.rpc.RpcClient;
 import nl.stil4m.transmission.rpc.RpcConfiguration;
 import nl.stil4m.transmission.rpc.RpcException;
@@ -115,6 +117,16 @@ public class DownloadService {
 				DownloadedItem item = DownloadedItem.fromTorrentInfo(info);
 				
 				itemRepository.save(item);
+			}
+			
+			//cleanup
+			if (info.getFinished()) {
+				trClient.removeTorrent(new RemoveTorrentInfo(new Ids() {
+					@Override
+					public Object theObject() {
+						return info.getId();
+					}
+				}, false));
 			}
 		}
 	}
