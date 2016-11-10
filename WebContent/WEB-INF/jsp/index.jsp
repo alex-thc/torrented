@@ -77,7 +77,11 @@ body {
     				</c:otherwise>
 				</c:choose>
             </td>
-            <td><a href="welcome.html?file=${item.videoFiles[0]}">${item.videoFiles[0]}</a></td>
+            <td>
+            <c:forEach items="${item.videoFiles}" var="video" varStatus="status">
+            	<a href="welcome.html?file=${video}">${video}</a><br/>
+            </c:forEach>
+            </td>
         </tr>
     </c:forEach>
 	</table>

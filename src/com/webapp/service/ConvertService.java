@@ -55,6 +55,8 @@ public class ConvertService {
 			item.getVideoFiles().addAll(convertedFiles);
 		}
 		item.getFilesToConvert().removeAll(tmp);
+		if (item.getFilesToConvert().isEmpty()) //nullify the array so that we don't look at this doc again
+			item.setFilesToConvert(null);
 		item.setProcessing(false);
 		itemRepository.save(item);
 	}
