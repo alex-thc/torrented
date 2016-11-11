@@ -31,7 +31,9 @@ public class ConvertService {
 		List<String> convertedFiles = new ArrayList<>();
 		List<String> tmp = new ArrayList<>();
 		
-		for(String fileName : item.getFilesToConvert()) {
+		{
+			String fileName = item.getFilesToConvert().get(0);
+			
 			System.out.println("CONVERT: converting " + fileName);
 			
 			String out = fileName + ".mp4";
