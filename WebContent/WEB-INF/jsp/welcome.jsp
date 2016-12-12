@@ -1,7 +1,6 @@
 <html>
 <head>
-<title>Spring MVC Tutorial by Crunchify - Hello World Spring MVC
-	Example</title>
+<title>Torrent Video Streaming</title>
 <style type="text/css">
 body {
 	background-image: url('http://crunchify.com/bg.png');
@@ -13,17 +12,15 @@ body {
 	<br>
 	<br>
 	<div style="font-family: verdana; padding: 10px; border-radius: 10px; font-size: 12px; text-align:center;">
- 
-		Spring MCV Tutorial by <a href="http://crunchify.com">Crunchify</a>.
-		Click <a
-			href="http://crunchify.com/category/java-web-development-tutorial/"
-			target="_blank">here</a> for all Java and <a
-			href='http://crunchify.com/category/spring-mvc/' target='_blank'>here</a>
-		for all Spring MVC, Web Development examples.<br>
+ 		You are watching ${model.file}. Enjoy!
 	</div>
 	
 	<video width="320" height="240" controls="controls">
-  		<source src="vids/${id}" type="video/mp4" />
+  		<source src="vids/${model.id}" type="video/mp4" />
 	</video>
+	<br> <br>
+	<i>This link is only valid for 24 hours. 
+	Please refresh the page if you want to continue
+	watching the video after the expiration time.</i>
 </body>
 </html>

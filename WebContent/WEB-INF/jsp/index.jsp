@@ -3,7 +3,7 @@
 
 <html>
 <head>
-<title>MongoDB Test Application</title>
+<title>Torrent Video Streaming</title>
 <style type="text/css">
 body {
 	background-image: url('http://crunchify.com/bg.png');
@@ -14,13 +14,18 @@ body {
 	<br>
 	<div style="text-align:center">
 		<h2>
-			Hey You..!! This is my test MongoDB Java Spring MVC app with different integrations<br> <br>
+			Welcome to my torrent video streaming service<br> <br>
+			This service is for demonstration purposes only and all
+			copyright content will be eventually cleaned up.<br> <br>
 		</h2>
 	</div>
 	
 	<h3>
-		Add a new item
+		Add a new item (use a link to your torrent file or a magnet link)
 	</h3>
+		<i>Use torrents with *.mp4 videos for best results. *.avi and *.mkv 
+		are also supported, but they need to be converted, and it can
+		take up to a day.</i>
 	<form action="submit.html" method="POST">
       <input type="text" id="newItemUri" name="newItemUri" />
       <input type="submit" value="Submit" />

@@ -1,7 +1,9 @@
 package com.webapp.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -51,8 +53,12 @@ public class WebAppHelloWorld {
 	
 		LinkEntry linkEntry = new LinkEntry(file);
 		linkRepository.save(linkEntry);
-				
-		return new ModelAndView("welcome", "id", linkEntry.getId().toString().replaceAll("-", ""));
+		
+		Map<String, Object> model = new HashMap<>();
+		model.put("id", linkEntry.getId().toString().replaceAll("-", ""));
+		model.put("file", file);
+
+		return new ModelAndView("welcome", "model", model);
 	}
 	
 	@RequestMapping("/")
