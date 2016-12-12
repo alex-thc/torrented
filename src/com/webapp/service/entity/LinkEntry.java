@@ -14,7 +14,7 @@ public class LinkEntry {
 	
 	private String link;
 	
-	@Indexed(expireAfterSeconds=7200)
+	@Indexed(expireAfterSeconds=86400)
 	private Date createdDate;
 
 	public UUID getId() {
