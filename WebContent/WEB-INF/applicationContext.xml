@@ -41,6 +41,8 @@
     <mongo:repositories base-package="com.webapp.service.repository" />
     
     <bean name="convertService" class="com.webapp.service.ConvertService"/>
+    
+    <bean name="cleanupService" class="com.webapp.service.CleanupService"/>
      
 	<task:scheduled-tasks scheduler="myScheduler">
     	<task:scheduled ref="convertService" method="runConversionRound" fixed-delay="10000"/>
@@ -49,9 +51,14 @@
     <task:scheduled-tasks scheduler="myScheduler1">
     	<task:scheduled ref="downloadService" method="checkFinishedDownloads" fixed-delay="5000"/>
 	</task:scheduled-tasks>
+	
+	<task:scheduled-tasks scheduler="myScheduler2">
+    	<task:scheduled ref="cleanupService" method="runCleanupRound" fixed-delay="86400000"/>
+	</task:scheduled-tasks>
 
 	<task:scheduler id="myScheduler" pool-size="4"/>
 	<task:scheduler id="myScheduler1" pool-size="1"/>
+	<task:scheduler id="myScheduler2" pool-size="1"/>
 
 	<context:component-scan base-package="com.webapp.service" />
 </beans>

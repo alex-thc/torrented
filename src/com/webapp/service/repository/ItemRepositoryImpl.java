@@ -1,6 +1,7 @@
 package com.webapp.service.repository;
 
 import java.io.NotActiveException;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,14 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 		return mongoTemplate.findAndModify(
 				query, update,
 				new FindAndModifyOptions().returnNew(true), DownloadedItem.class);
+	}
+
+	@Override
+	public List<DownloadedItem> getItemsAddedBeforeDate(Date date) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("addedDate").lte(date).and("isProcessing").is(false));
+
+		return mongoTemplate.find(query, DownloadedItem.class);
 	}
 	
 }
