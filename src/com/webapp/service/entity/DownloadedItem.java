@@ -30,7 +30,7 @@ public class DownloadedItem {
     //files that need conversion
     private List<String> filesToConvert;
 
-	//files created by the conversion process
+	//files created by the conversion process (not used)
     private List<String> convertedFiles;
     
     //video files

@@ -30,4 +30,9 @@ public abstract class ShellCommand {
 		return output.toString();
 
 	}
+	
+	public static String getBaseDirPath(String filePath) {
+	    Integer firstIndex = filePath.indexOf(File.separatorChar);
+	    return firstIndex>0 ? filePath.substring(0, firstIndex) : null;
+	}
 }
