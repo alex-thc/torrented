@@ -36,7 +36,7 @@ body {
 	</h3>
 	<table>
     <tr>
-        <th>Magnet</th>
+        <th>Name</th>
         <th>Eta(min)</th>
         <th>%done</th>
         <th>Rate</th>
@@ -45,7 +45,7 @@ body {
     </tr>
     <c:forEach items="${activeItemsList}" var="item" varStatus="status">
         <tr>
-            <td>${item.magnetLink}</td>
+            <td>${item.name}</td>
             <td><fmt:formatNumber type="number" maxFractionDigits="1" value="${item.eta/60}" /></td>
             <td><fmt:formatNumber type="number" maxFractionDigits="1" value="${item.percentDone*100}" /></td>
             <td>${item.rateDownload}</td>
