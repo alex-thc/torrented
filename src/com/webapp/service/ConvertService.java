@@ -5,10 +5,13 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mongodb.util.Util;
 import com.webapp.exception.ShellCommandException;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.repository.ItemRepository;
@@ -20,6 +23,8 @@ public class ConvertService {
 	private ItemRepository itemRepository;
 	
 	private static final String BASE_PATH = "/data";
+	
+	private Pattern handbrakeLogPattern = Pattern.compile("\\s([0-9]{1,2}\\.[0-9]{2})\\s%.*ETA\\s(\\w{9})");
 	
 	public void runConversionRound() {
 		
@@ -42,7 +47,7 @@ public class ConvertService {
 				"/usr/bin/HandBrakeCLI -Z iPad -i \'%s\' -o \'%s\'",
 				BASE_PATH + "/" + fileName, BASE_PATH + "/" + out);
 			try {
-				ShellCommand.executeCommand(convertCmd,"/tmp/handbrake.log");
+				ShellCommand.executeCommand(convertCmd,"/tmp/handbrake.log." + item.getId());
 				convertedFiles.add(out);
 				tmp.add(fileName);
 			} catch (ShellCommandException e) {
@@ -64,28 +69,24 @@ public class ConvertService {
 		itemRepository.save(item);
 	}
 	
-//	private String executeCommand(String command, String logFile) throws ShellCommandException {
-//
-//		StringBuffer output = new StringBuffer();
-//		
-//		ProcessBuilder builder = new ProcessBuilder("bash", "-c", command);
-//		builder.redirectOutput(new File(logFile));
-//		builder.redirectError(new File(logFile));
-//		Process p;
-//
-//		try {
-//			p = builder.start();
-//			p.waitFor();
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			throw new ShellCommandException(e.getMessage());
-//		}
-//		
-//		if (p.exitValue() != 0) //process failed
-//			throw new ShellCommandException("Process failed: " + p.exitValue(), command, output.toString());
-//			
-//		return output.toString();
-//
-//	}
+	public void updateProcessingPercentageComplete() {
+		
+		List<DownloadedItem> items = itemRepository.getItemsInProcess();
+		
+		if (items == null)
+			return;
+		
+		for(DownloadedItem item : items) {
+			String fileName = "/tmp/handbrake.log." + item.getId();
+			String lastLine = com.webapp.util.Util.tail(fileName);
+			Matcher m = handbrakeLogPattern.matcher(lastLine);
+			String processingStatus = null;
+			if (m.find() && m.groupCount() == 2) {
+				processingStatus = String.format("%s%%, eta %s", m.group(1), m.group(2));
+			} else {
+				//System.out.println("CONVERT: failed to process the last line of " + fileName);
+			}
+			itemRepository.setItemProcessingStatus(item, processingStatus);
+		}
+	}
 }

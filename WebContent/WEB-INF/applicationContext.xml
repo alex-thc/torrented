@@ -55,10 +55,15 @@
 	<task:scheduled-tasks scheduler="myScheduler2">
     	<task:scheduled ref="cleanupService" method="runCleanupRound" fixed-delay="86400000"/>
 	</task:scheduled-tasks>
+	
+	<task:scheduled-tasks scheduler="myScheduler3">
+    	<task:scheduled ref="convertService" method="updateProcessingPercentageComplete" fixed-delay="10000"/>
+	</task:scheduled-tasks>
 
 	<task:scheduler id="myScheduler" pool-size="4"/>
 	<task:scheduler id="myScheduler1" pool-size="1"/>
 	<task:scheduler id="myScheduler2" pool-size="1"/>
+	<task:scheduler id="myScheduler3" pool-size="1"/>
 
 	<context:component-scan base-package="com.webapp.service" />
 </beans>

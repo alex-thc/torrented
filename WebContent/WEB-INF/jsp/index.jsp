@@ -72,7 +72,7 @@ body {
             <td>
             	<c:choose>
             		<c:when test="${item.processing}">
-        				Processing
+        				Processing ${item.processingStatus}
     				</c:when>
     				<c:when test="${not empty item.filesToConvert}">
         				Needs conversion

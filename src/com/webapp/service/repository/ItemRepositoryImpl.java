@@ -42,5 +42,24 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
 		return mongoTemplate.find(query, DownloadedItem.class);
 	}
+
+	@Override
+	public List<DownloadedItem> getItemsInProcess() {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("isProcessing").is(true));
+
+		return mongoTemplate.find(query, DownloadedItem.class);
+	}
+
+	@Override
+	public void setItemProcessingStatus(DownloadedItem item, String processingStatus) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("isProcessing").is(true).and("_id").is(item.getId())); //we need to make sure that we don't conflict with the conversion thread resetting the status
+		
+		Update update = new Update();
+		update.set("processingStatus", processingStatus);
+		
+		mongoTemplate.updateFirst(query, update, DownloadedItem.class);
+	}
 	
 }

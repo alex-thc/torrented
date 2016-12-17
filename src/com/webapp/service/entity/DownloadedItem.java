@@ -38,6 +38,7 @@ public class DownloadedItem {
     
     //being processed by the converter
     private boolean isProcessing;
+    private String processingStatus;
     
 	public boolean isProcessing() {
 		return isProcessing;
@@ -193,6 +194,14 @@ public class DownloadedItem {
 		}
 		
 		return item;
+	}
+
+	public String getProcessingStatus() {
+		return processingStatus;
+	}
+
+	public void setProcessingStatus(String processingStatus) {
+		this.processingStatus = processingStatus;
 	}
 	
 }
