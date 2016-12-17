@@ -1,6 +1,7 @@
 <html>
 <head>
 <title>Torrent Video Streaming</title>
+<link rel="icon" type="image/x-icon" href="resources/favicon.ico" />
 <style type="text/css">
 body {
 	background-image: url('http://crunchify.com/bg.png');
