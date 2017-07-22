@@ -29,6 +29,7 @@ import com.webapp.service.entity.UserEntry;
 import com.webapp.service.repository.ItemRepository;
 import com.webapp.service.repository.LinkRepository;
 import com.webapp.service.repository.UserRepository;
+import com.webapp.util.Constants;
 
 import nl.stil4m.transmission.api.domain.TorrentInfo;
 import nl.stil4m.transmission.rpc.RpcException;

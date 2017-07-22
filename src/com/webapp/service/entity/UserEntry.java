@@ -1,7 +1,11 @@
 package com.webapp.service.entity;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.webapp.util.Constants;
 
 @Document
 public class UserEntry {
@@ -9,6 +13,11 @@ public class UserEntry {
 	private String username;
 	private String password;
 	
+	List<Constants.UserGroup> groups;
+	
+	public List<Constants.UserGroup> getGroups() {
+		return groups;
+	}
 	public String getUsername() {
 		return username;
 	}
