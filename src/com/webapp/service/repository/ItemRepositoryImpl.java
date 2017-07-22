@@ -9,6 +9,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -62,4 +63,11 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 		mongoTemplate.updateFirst(query, update, DownloadedItem.class);
 	}
 	
+	@Override
+	public List<DownloadedItem> findUserItemsSorted(String user) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("users").is(user));
+
+		return mongoTemplate.find(query.with(new Sort(Direction.DESC, "addedDate")), DownloadedItem.class);
+	}
 }

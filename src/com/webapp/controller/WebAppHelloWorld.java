@@ -63,7 +63,10 @@ public class WebAppHelloWorld {
 	}
 	
 	@RequestMapping("/")
-	public ModelAndView mainView(@CookieValue(value = "authenticated", defaultValue = "false") String authCookie) {
+	public ModelAndView mainView(
+			@CookieValue(value = "authenticated", defaultValue = "false") String authCookie,
+			@CookieValue(value = "username", defaultValue = "") String username
+			) {
  
 		if (! authCookie.equals("true")) {
 			return new ModelAndView(new RedirectView("login"));
@@ -82,8 +85,18 @@ public class WebAppHelloWorld {
 		
 		model.addObject("activeItemsList", activeItems);
 		
-		List<DownloadedItem> downloadedItems = itemRepository.findAll();
-		model.addObject("downloadedItemsList", downloadedItems);
+		UserEntry user = userRepository.findOne(username);
+		if (user != null) {
+			List<DownloadedItem> downloadedItems = new ArrayList<>();
+			
+			if (user.getGroups().contains(Constants.UserGroup.GROUP_ADMIN)) //admin sees it all
+				downloadedItems = itemRepository.findAll();
+			else if (user.getGroups().contains(Constants.UserGroup.GROUP_USER)) {
+				downloadedItems = itemRepository.findUserItemsSorted(user.getUsername());
+			}
+			
+			model.addObject("downloadedItemsList", downloadedItems);
+		}
 		
 		return model;
 	}
@@ -126,6 +139,11 @@ public class WebAppHelloWorld {
 		Cookie authCookie = new Cookie("authenticated", "true");
 		authCookie.setMaxAge(3600*72);
 		response.addCookie(authCookie);
-		return mainView("true");
+		
+		Cookie usernameCookie = new Cookie("username", userInfo.getUsername());
+		usernameCookie.setMaxAge(3600*72);
+		response.addCookie(usernameCookie);
+		
+		return mainView("true", userInfo.getUsername());
 	}
 }
