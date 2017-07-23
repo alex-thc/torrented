@@ -11,18 +11,19 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mongodb.util.Util;
 import com.webapp.exception.ShellCommandException;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.repository.ItemRepository;
+import com.webapp.util.Constants;
 import com.webapp.util.ShellCommand;
+import com.webapp.util.Util;
 
 @Service
 public class ConvertService {
 	@Autowired
 	private ItemRepository itemRepository;
 	
-	private static final String BASE_PATH = "/data";
+	private static final String BASE_PATH = Constants.DOWNLOAD_BASE_PATH;
 	
 	private Pattern handbrakeLogPattern = Pattern.compile("\\s([0-9]{1,2}\\.[0-9]{2})\\s%.*ETA\\s(\\w{9})");
 	

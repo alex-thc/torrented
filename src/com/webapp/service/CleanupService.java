@@ -13,14 +13,16 @@ import org.springframework.stereotype.Service;
 import com.webapp.exception.ShellCommandException;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.repository.ItemRepository;
+import com.webapp.util.Constants;
 import com.webapp.util.ShellCommand;
+import com.webapp.util.Util;
 
 @Service
 public class CleanupService {
 	@Autowired
 	private ItemRepository itemRepository;
 	
-	private static final String BASE_PATH = "/data";
+	private static final String BASE_PATH = Constants.DOWNLOAD_BASE_PATH;
 	
 	private static final Integer EXPIRY_DAYS = 14;
 	

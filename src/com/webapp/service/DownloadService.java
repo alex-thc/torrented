@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.util.Util;
 import com.webapp.exception.InvalidMagnetLinkException;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.entity.UserEntry;
 import com.webapp.service.repository.ItemRepository;
 import com.webapp.service.repository.UserRepository;
+import com.webapp.util.Constants;
+import com.webapp.util.Util;
 
 import nl.stil4m.transmission.api.TransmissionRpcClient;
 import nl.stil4m.transmission.api.domain.AddTorrentInfo;
@@ -33,7 +34,7 @@ import nl.stil4m.transmission.rpc.RpcException;
 public class DownloadService {
 		
 	private static String host = "http://localhost:9091/transmission/rpc";
-	private static String downloadDir = "/data";
+	private static String downloadDir = Constants.DOWNLOAD_BASE_PATH;
 	
 	private static TransmissionRpcClient trClient;
 	
