@@ -33,8 +33,34 @@ body {
       <input type="submit" value="Submit" />
     </form>
 	
+<c:if test="${showActiveDownloads == true}">
 	<h3>
-		Active downloads
+		Active downloads from Transmission
+	</h3>
+	<table>
+    <tr>
+        <th>Name</th>
+        <th>Eta(min)</th>
+        <th>%done</th>
+        <th>Rate</th>
+        <th>Status</th>
+        <th>Finished</th>
+    </tr>
+    <c:forEach items="${activeDownloadsList}" var="item" varStatus="status">
+        <tr>
+            <td>${item.name}</td>
+            <td><fmt:formatNumber type="number" maxFractionDigits="1" value="${item.eta/60}" /></td>
+            <td><fmt:formatNumber type="number" maxFractionDigits="1" value="${item.percentDone*100}" /></td>
+            <td>${item.rateDownload}</td>
+            <td>${item.status}</td>
+            <td>${item.finished}</td>
+        </tr>
+    </c:forEach>
+    </table>
+</c:if>
+	
+	<h3>
+		My active downloads
 	</h3>
 	<table>
     <tr>

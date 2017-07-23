@@ -58,7 +58,7 @@ public class DownloadService {
 		addTorrentInfo.setFilename(item.getUri());
 		addTorrentInfo.setDownloadDir(downloadDir);
 		addTorrentInfo.setPaused(false);
-		
+		//TODO: check for free space?
 		AddedTorrentInfo addedInfo = trClient.addTorrent(addTorrentInfo);
 		
 		//TODO: store torrent information (new store class and new entity class)

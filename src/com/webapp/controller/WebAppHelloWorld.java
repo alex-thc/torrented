@@ -72,31 +72,50 @@ public class WebAppHelloWorld {
 			return new ModelAndView(new RedirectView("login"));
 		}
 		
+		UserEntry user = userRepository.findOne(username);
+		if (user == null) {
+			System.out.println("Failed to get user by username: " + username);
+			return new ModelAndView(new RedirectView("login"));
+		}
+		
 		ModelAndView model = new ModelAndView("index");
+		
+		if (user.getGroups().contains(Constants.UserGroup.GROUP_ADMIN))
+		{
+			model.addObject("showActiveDownloads", true);
+			
+			List<TorrentInfo> activeDownloads = null;
+			
+			try {
+				activeDownloads = downloadService.getAllItems();
+			} catch (RpcException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			model.addObject("activeDownloadsList", activeDownloads);
+		}
 		
 		List<TorrentInfo> activeItems = null;
 		
-		try {
-			activeItems = downloadService.getAllItems();
-		} catch (RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			activeItems = downloadService.getAllItems();
+//		} catch (RpcException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		model.addObject("activeItemsList", activeItems);
 		
-		UserEntry user = userRepository.findOne(username);
-		if (user != null) {
-			List<DownloadedItem> downloadedItems = new ArrayList<>();
-			
-			if (user.getGroups().contains(Constants.UserGroup.GROUP_ADMIN)) //admin sees it all
-				downloadedItems = itemRepository.findAll();
-			else if (user.getGroups().contains(Constants.UserGroup.GROUP_USER)) {
-				downloadedItems = itemRepository.findUserItemsSorted(user.getUsername());
-			}
-			
-			model.addObject("downloadedItemsList", downloadedItems);
+		List<DownloadedItem> downloadedItems = null;
+		
+		if (user.getGroups().contains(Constants.UserGroup.GROUP_ADMIN)) //admin sees it all
+			downloadedItems = itemRepository.findAll();
+		else if (user.getGroups().contains(Constants.UserGroup.GROUP_USER)) {
+			downloadedItems = itemRepository.findUserItemsSorted(user.getUsername());
 		}
+		
+		model.addObject("downloadedItemsList", downloadedItems);
 		
 		return model;
 	}
