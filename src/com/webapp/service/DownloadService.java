@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.util.Util;
+import com.webapp.exception.InvalidMagnetLinkException;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.repository.ItemRepository;
 
@@ -54,6 +56,20 @@ public class DownloadService {
 	}
 	
 	public void addItem(Item item) throws RpcException {
+		
+		//get the hash of the item first
+		String hash = null;
+		if (com.webapp.util.Util.isMagnetLink(item.getUri())) {
+			try {
+				hash = com.webapp.util.Util.magnet2hash(item.getUri());
+				System.out.println("HASH: " + hash);
+			} catch(InvalidMagnetLinkException ex) {
+				throw new RpcException("Failed to get hash from the magnet link. Is it valid?");
+			}
+		}
+		else return;
+		
+		
 		AddTorrentInfo addTorrentInfo = new AddTorrentInfo();
 		addTorrentInfo.setFilename(item.getUri());
 		addTorrentInfo.setDownloadDir(downloadDir);

@@ -3,8 +3,13 @@ package com.webapp.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.webapp.exception.InvalidMagnetLinkException;
 
 public abstract class Util {
+	
 	/**
 	 * 
 	 * @param file
@@ -54,4 +59,22 @@ public abstract class Util {
 	            }
 	    }
 	}
+	
+	public static final Pattern magnet_check_regex = Pattern.compile("^magnet:");
+	public static final Pattern magnet_hash_regex = Pattern.compile("([A-Z0-9]{40})");
+	
+	public static boolean isMagnetLink(String uri) {
+		Matcher matcher = magnet_check_regex.matcher(uri);
+		return matcher.find();
+	}
+	
+    public static String magnet2hash(String magnet) throws InvalidMagnetLinkException {
+        String magnet1 = magnet.toUpperCase();
+        Matcher matcher = magnet_hash_regex.matcher(magnet1);
+        if (!matcher.find()) {
+            throw new InvalidMagnetLinkException("The magnet link \"" + magnet + "\" isn't valid.");
+        }
+        String hash = matcher.group(1);
+        return hash;
+    }
 }
