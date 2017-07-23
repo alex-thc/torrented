@@ -91,7 +91,7 @@ public class DownloadService {
 		//if so, just bump up the added date and get out
 		DownloadedItem downloadedItem = itemRepository.findByHash(hash);
 		if (downloadedItem != null) {
-			itemRepository.resetAddedDate(downloadedItem, new Date());
+			itemRepository.resetAddedDate(downloadedItem, new Date()); //this will be overwritten if the download is active, but we don't care much about it
 			return;
 		}
 		
@@ -102,10 +102,6 @@ public class DownloadService {
 		addTorrentInfo.setPaused(false);
 		//TODO: check for free space?
 		AddedTorrentInfo addedInfo = trClient.addTorrent(addTorrentInfo);
-		
-		
-		
-		//TODO: store torrent information (new store class and new entity class)
 	}
 	
 	public List<TorrentInfo> getAllItems() throws RpcException {
@@ -157,27 +153,28 @@ public class DownloadService {
 		for(int i=0; i<torrents.size(); i++) {
 			TorrentInfo info = torrents.get(i);
 			
+			//check if an active record exists for this torrent and it's active status
+			DownloadedItem storedItemStripped = itemRepository.getItemActiveFlagById(info.getId());
+			
+			//if it exists and not active - we have already updated it's status before
+			//nothing to do - just move on to the next one
+			if (storedItemStripped != null && storedItemStripped.isActive() == false) 
+				continue;
+			
+			DownloadedItem item;
+			
 			if (info.getStatus() == 6 /*seeding*/ || info.getFinished()) {
 				
-				DownloadedItem item = DownloadedItem.fromTorrentInfo(info, false);
-				
-				//check if an active record exists for this torrent and it's active status
-				DownloadedItem storedItemStripped = itemRepository.getItemActiveFlag(item);
-				if (storedItemStripped == null || storedItemStripped.isActive() == true) { 
-					//does not exist or is stored as active
-					itemRepository.save(item);
-				} else {
-					//exists and not active - we have already updated it's status before
-					//nothing to do
-				}
+				item = DownloadedItem.fromTorrentInfo(info, false);
 
 			} else {
-				DownloadedItem item = DownloadedItem.fromTorrentInfo(info, true);
-				
-				itemRepository.save(item); //we'll just overwrite it to get the most up to date stats
+				item = DownloadedItem.fromTorrentInfo(info, true);				
 			}
 			
-			//cleanup
+			//overwrite whatever we have in the database
+			itemRepository.save(item); 
+			
+			//cleanup when we finished downloading and seeding
 			if (info.getFinished()) {
 				trClient.removeTorrent(new RemoveTorrentInfo(new Ids() {
 					@Override

@@ -16,5 +16,5 @@ public interface ItemRepositoryCustom {
 	
 	public void resetAddedDate(DownloadedItem item, Date date);
 	
-	public DownloadedItem getItemActiveFlag(DownloadedItem item);
+	public DownloadedItem getItemActiveFlagById(Long id);
 }

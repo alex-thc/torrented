@@ -88,9 +88,9 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 	}
 
 	@Override
-	public DownloadedItem getItemActiveFlag(DownloadedItem item) {
+	public DownloadedItem getItemActiveFlagById(Long id) {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("_id").is(item.getId()));
+		query.addCriteria(Criteria.where("_id").is(id));
 		
 		//we are only interested in the isActive flag
 		query.fields().include("isActive");
