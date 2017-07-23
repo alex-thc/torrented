@@ -103,7 +103,7 @@ public class WebAppHelloWorld {
 		List<DownloadedItem> downloadedItems = null;
 		
 		if (user.getGroups().contains(Constants.UserGroup.GROUP_ADMIN)) //admin sees it all
-			downloadedItems = itemRepository.findAll();
+			downloadedItems = itemRepository.findAllNonActive();
 		else if (user.getGroups().contains(Constants.UserGroup.GROUP_USER)) {
 			downloadedItems = itemRepository.findUserItemsSorted(user, false /*not active*/);
 		}

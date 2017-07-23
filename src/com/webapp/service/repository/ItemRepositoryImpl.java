@@ -97,4 +97,13 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
 		return mongoTemplate.findOne(query, DownloadedItem.class);
 	}
+	
+	@Override
+	public List<DownloadedItem> findAllNonActive() {
+		Query query = new Query();
+		
+		query.addCriteria(Criteria.where("isActive").is(false));
+
+		return mongoTemplate.find(query.with(new Sort(Direction.DESC, "addedDate")), DownloadedItem.class);
+	}
 }
