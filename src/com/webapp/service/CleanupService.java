@@ -39,6 +39,7 @@ public class CleanupService {
 				filesToDelete.addAll(item.getVideoFiles());
 			
 			itemRepository.delete(item);
+			//TODO: remove the hash from users access lists
 			
 			if (filesToDelete.isEmpty())
 				continue;

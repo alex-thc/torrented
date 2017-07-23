@@ -64,6 +64,17 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 	}
 	
 	@Override
+	public void resetAddedDate(DownloadedItem item, Date date) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("_id").is(item.getId()));
+		
+		Update update = new Update();
+		update.set("addedDate", date);
+		
+		mongoTemplate.updateFirst(query, update, DownloadedItem.class);
+	}
+	
+	@Override
 	public List<DownloadedItem> findUserItemsSorted(String user) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("users").is(user));

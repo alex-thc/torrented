@@ -12,4 +12,6 @@ public interface ItemRepositoryCustom {
 	public void setItemProcessingStatus(DownloadedItem item, String processingStatus);
 	
 	public List<DownloadedItem> findUserItemsSorted(String user);
+	
+	public void resetAddedDate(DownloadedItem item, Date date);
 }

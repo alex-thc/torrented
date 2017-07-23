@@ -14,7 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.util.Util;
 import com.webapp.exception.InvalidMagnetLinkException;
 import com.webapp.service.entity.DownloadedItem;
+import com.webapp.service.entity.UserEntry;
 import com.webapp.service.repository.ItemRepository;
+import com.webapp.service.repository.UserRepository;
 
 import nl.stil4m.transmission.api.TransmissionRpcClient;
 import nl.stil4m.transmission.api.domain.AddTorrentInfo;
@@ -38,6 +40,9 @@ public class DownloadService {
 	@Autowired
 	private ItemRepository itemRepository;
 	
+	@Autowired
+	private UserRepository userRepository;
+	
 	public DownloadService() {		
 		RpcConfiguration rpcConfig = new RpcConfiguration();
 		try {
@@ -55,7 +60,7 @@ public class DownloadService {
 		
 	}
 	
-	public void addItem(Item item) throws RpcException {
+	public void addItem(Item item, UserEntry user) throws RpcException {
 		
 		//get the hash of the item first
 		String hash = null;
@@ -79,12 +84,26 @@ public class DownloadService {
 		//System.out.println("HASH: " + hash);
 		//if (1==1) return;
 		
+		//first, grant this user the access to the hash
+		userRepository.grantAccessToHash(user, hash);
+		
+		//check if we have already downloaded the file
+		//if so, just bump up the added date and get out
+		DownloadedItem downloadedItem = itemRepository.findByHash(hash);
+		if (downloadedItem != null) {
+			itemRepository.resetAddedDate(downloadedItem, new Date());
+			return;
+		}
+		
+		//try to download it
 		AddTorrentInfo addTorrentInfo = new AddTorrentInfo();
 		addTorrentInfo.setFilename(item.getUri());
 		addTorrentInfo.setDownloadDir(downloadDir);
 		addTorrentInfo.setPaused(false);
 		//TODO: check for free space?
 		AddedTorrentInfo addedInfo = trClient.addTorrent(addTorrentInfo);
+		
+		
 		
 		//TODO: store torrent information (new store class and new entity class)
 	}

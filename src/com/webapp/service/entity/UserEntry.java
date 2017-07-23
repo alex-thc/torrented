@@ -13,8 +13,15 @@ public class UserEntry {
 	private String username;
 	private String password;
 	
-	List<Constants.UserGroup> groups;
+	List<Constants.UserGroup> groups; //permission groups
+	List<String> torrentHashes; //torrent hashes that this user has access to (uppercase)
 	
+	public List<String> getTorrentHashes() {
+		return torrentHashes;
+	}
+	public void setTorrentHashes(List<String> torrentHashes) {
+		this.torrentHashes = torrentHashes;
+	}
 	public List<Constants.UserGroup> getGroups() {
 		return groups;
 	}

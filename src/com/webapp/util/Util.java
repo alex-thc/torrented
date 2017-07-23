@@ -140,6 +140,6 @@ public abstract class Util {
         
         FileUtils.forceDelete(file);
         
-        return hexString.toString();
+        return hexString.toString().toUpperCase();
     }
 }

@@ -121,11 +121,19 @@ public class WebAppHelloWorld {
 	}
 	
 	@RequestMapping(value="/submit", method=RequestMethod.POST)
-    public ModelAndView itemSubmit(@RequestParam("newItemUri") String newItemUri) {
+    public ModelAndView itemSubmit(
+    		@RequestParam("newItemUri") String newItemUri,
+    		@CookieValue(value = "username", defaultValue = "") String username
+    		) {
 		System.out.println("Item uri: " + newItemUri + " " + downloadService.getMessage());
 		
+		UserEntry user = userRepository.findOne(username);
+		if (user == null) {
+			new ModelAndView("submit", "error", "Failed to get user by username: " + username);
+		}
+		
 		try {
-			downloadService.addItem(new Item(newItemUri));
+			downloadService.addItem(new Item(newItemUri), user);
 		} catch (RpcException e) {
 			return new ModelAndView("submit", "error", e.getMessage());
 		}
