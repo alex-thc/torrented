@@ -24,6 +24,9 @@ public class DownloadedItem {
     private Long status;
     private Long totalSize;
     
+    //hash of the torrent
+    private String hash;
+    
     //list of users that have access to this item
     private List<String> users;
     
@@ -172,6 +175,8 @@ public class DownloadedItem {
 		item.setStatus(info.getStatus());
 		item.setTotalSize(info.getTotalSize());
 		
+		item.setHash(info.getHashString());
+		
 		if (info.getFiles() != null) {
 			List<String> downloadedFiles = new ArrayList<>();
 			List<String> videoFiles = new ArrayList<>();
@@ -213,6 +218,14 @@ public class DownloadedItem {
 
 	public void setUsers(List<String> users) {
 		this.users = users;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 	
 }
