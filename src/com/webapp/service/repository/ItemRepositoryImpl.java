@@ -25,9 +25,9 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 	private MongoTemplate mongoTemplate;
 	
 	@Override
-	public DownloadedItem getAndLockItemToConvert() {
+	public DownloadedItem getAndLockNonActiveItemToConvert() {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("filesToConvert").ne(null).and("isProcessing").is(false));
+		query.addCriteria(Criteria.where("filesToConvert").ne(null).and("isProcessing").is(false).and("isActive").is(false));
 
 		Update update = new Update();
 		update.set("isProcessing", true);
@@ -38,9 +38,9 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 	}
 
 	@Override
-	public List<DownloadedItem> getItemsAddedBeforeDate(Date date) {
+	public List<DownloadedItem> getNonActiveItemsAddedBeforeDate(Date date) {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("addedDate").lte(date).and("isProcessing").is(false));
+		query.addCriteria(Criteria.where("addedDate").lte(date).and("isProcessing").is(false).and("isActive").is(false));
 
 		return mongoTemplate.find(query, DownloadedItem.class);
 	}
@@ -76,14 +76,25 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 	}
 	
 	@Override
-	public List<DownloadedItem> findUserItemsSorted(UserEntry user) {
+	public List<DownloadedItem> findUserItemsSorted(UserEntry user, boolean isActive) {
 		Query query = new Query();
 		
 		if (user.getTorrentHashes() == null)
 			return null;
 		
-		query.addCriteria(Criteria.where("hash").in(user.getTorrentHashes()));
+		query.addCriteria(Criteria.where("hash").in(user.getTorrentHashes()).and("isActive").is(isActive));
 
 		return mongoTemplate.find(query.with(new Sort(Direction.DESC, "addedDate")), DownloadedItem.class);
+	}
+
+	@Override
+	public DownloadedItem getItemActiveFlag(DownloadedItem item) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("_id").is(item.getId()));
+		
+		//we are only interested in the isActive flag
+		query.fields().include("isActive");
+
+		return mongoTemplate.findOne(query, DownloadedItem.class);
 	}
 }

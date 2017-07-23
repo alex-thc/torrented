@@ -28,7 +28,7 @@ public class ConvertService {
 	
 	public void runConversionRound() {
 		
-		DownloadedItem item = itemRepository.getAndLockItemToConvert();
+		DownloadedItem item = itemRepository.getAndLockNonActiveItemToConvert();
 		if (item == null) {
 			//System.out.println("CONVERT: nothing to do");
 			return;

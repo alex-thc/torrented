@@ -24,6 +24,11 @@ public class DownloadedItem {
     private Long status;
     private Long totalSize;
     
+    //active stats
+    private Long eta;
+    private Double percentDone;
+    private Long rateDownload;
+    
     //hash of the torrent
     private String hash;
     
@@ -43,6 +48,36 @@ public class DownloadedItem {
     private boolean isProcessing;
     private String processingStatus;
     
+    //is an active download
+    private boolean isActive;
+    
+    
+    
+    
+	public Long getEta() {
+		return eta;
+	}
+
+	public void setEta(Long eta) {
+		this.eta = eta;
+	}
+
+	public Double getPercentDone() {
+		return percentDone;
+	}
+
+	public void setPercentDone(Double percentDone) {
+		this.percentDone = percentDone;
+	}
+
+	public Long getRateDownload() {
+		return rateDownload;
+	}
+
+	public void setRateDownload(Long rateDownload) {
+		this.rateDownload = rateDownload;
+	}
+
 	public boolean isProcessing() {
 		return isProcessing;
 	}
@@ -159,8 +194,10 @@ public class DownloadedItem {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static DownloadedItem fromTorrentInfo(TorrentInfo info) {
+	public static DownloadedItem fromTorrentInfo(TorrentInfo info, boolean isActive) {
 		DownloadedItem item = new DownloadedItem();
+		
+		item.setActive(isActive);
 		
 		item.setMagnetLink(info.getMagnetLink());
 		item.setAddedDate(new Date(info.getAddedDate()*1000));
@@ -174,7 +211,11 @@ public class DownloadedItem {
 		
 		item.setHash(info.getHashString().toUpperCase());
 		
-		if (info.getFiles() != null) {
+		item.setEta(info.getEta());
+		item.setRateDownload(info.getRateDownload());
+		item.setPercentDone(info.getPercentDone());
+		
+		if (! isActive && info.getFiles() != null) { //no point in parsing files if it's an active download
 			List<String> downloadedFiles = new ArrayList<>();
 			List<String> videoFiles = new ArrayList<>();
 			List<String> filesToConvert = new ArrayList<>();
@@ -215,6 +256,14 @@ public class DownloadedItem {
 
 	public void setHash(String hash) {
 		this.hash = hash;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 }

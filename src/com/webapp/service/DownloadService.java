@@ -159,9 +159,22 @@ public class DownloadService {
 			
 			if (info.getStatus() == 6 /*seeding*/ || info.getFinished()) {
 				
-				DownloadedItem item = DownloadedItem.fromTorrentInfo(info);
+				DownloadedItem item = DownloadedItem.fromTorrentInfo(info, false);
 				
-				itemRepository.save(item);
+				//check if an active record exists for this torrent and it's active status
+				DownloadedItem storedItemStripped = itemRepository.getItemActiveFlag(item);
+				if (storedItemStripped == null || storedItemStripped.isActive() == true) { 
+					//does not exist or is stored as active
+					itemRepository.save(item);
+				} else {
+					//exists and not active - we have already updated it's status before
+					//nothing to do
+				}
+
+			} else {
+				DownloadedItem item = DownloadedItem.fromTorrentInfo(info, true);
+				
+				itemRepository.save(item); //we'll just overwrite it to get the most up to date stats
 			}
 			
 			//cleanup

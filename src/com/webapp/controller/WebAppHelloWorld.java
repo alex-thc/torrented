@@ -96,14 +96,7 @@ public class WebAppHelloWorld {
 			model.addObject("activeDownloadsList", activeDownloads);
 		}
 		
-		List<TorrentInfo> activeItems = null;
-		
-//		try {
-//			activeItems = downloadService.getAllItems();
-//		} catch (RpcException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		List<DownloadedItem> activeItems = itemRepository.findUserItemsSorted(user, true /*active*/);;
 		
 		model.addObject("activeItemsList", activeItems);
 		
@@ -112,7 +105,7 @@ public class WebAppHelloWorld {
 		if (user.getGroups().contains(Constants.UserGroup.GROUP_ADMIN)) //admin sees it all
 			downloadedItems = itemRepository.findAll();
 		else if (user.getGroups().contains(Constants.UserGroup.GROUP_USER)) {
-			downloadedItems = itemRepository.findUserItemsSorted(user);
+			downloadedItems = itemRepository.findUserItemsSorted(user, false /*not active*/);
 		}
 		
 		model.addObject("downloadedItemsList", downloadedItems);

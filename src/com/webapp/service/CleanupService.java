@@ -27,7 +27,7 @@ public class CleanupService {
 	public void runCleanupRound() {
 		Calendar calendar = Calendar.getInstance(); // this would default to now
 		calendar.add(Calendar.DAY_OF_MONTH, -EXPIRY_DAYS);
-		List<DownloadedItem> itemsToCleanup = itemRepository.getItemsAddedBeforeDate(calendar.getTime());
+		List<DownloadedItem> itemsToCleanup = itemRepository.getNonActiveItemsAddedBeforeDate(calendar.getTime());
 				
 		for (DownloadedItem item : itemsToCleanup) {
 			System.out.println("CLEANUP: cleaning up " + item.getName());
