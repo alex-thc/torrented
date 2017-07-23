@@ -88,7 +88,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 	}
 
 	@Override
-	public DownloadedItem getItemActiveFlagById(Long id) {
+	public DownloadedItem getItemActiveFlagById(String id) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("_id").is(id));
 		

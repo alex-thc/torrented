@@ -154,7 +154,7 @@ public class DownloadService {
 			TorrentInfo info = torrents.get(i);
 			
 			//check if an active record exists for this torrent and it's active status
-			DownloadedItem storedItemStripped = itemRepository.getItemActiveFlagById(info.getId());
+			DownloadedItem storedItemStripped = itemRepository.getItemActiveFlagById(info.getHashString().toUpperCase());
 			
 			//if it exists and not active - we have already updated it's status before
 			//nothing to do - just move on to the next one

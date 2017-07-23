@@ -16,7 +16,7 @@ public interface ItemRepositoryCustom {
 	
 	public void resetAddedDate(DownloadedItem item, Date date);
 	
-	public DownloadedItem getItemActiveFlagById(Long id);
+	public DownloadedItem getItemActiveFlagById(String id);
 	
 	public List<DownloadedItem> findAllNonActive();
 }

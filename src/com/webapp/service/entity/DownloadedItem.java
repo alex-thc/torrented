@@ -18,7 +18,7 @@ public class DownloadedItem {
 	private long error;
 	private String errorString;
 	@Id
-	private long id;
+	private String id;
 	private boolean isFinished;
 	private String name;
     private Long status;
@@ -118,11 +118,11 @@ public class DownloadedItem {
 		this.errorString = errorString;
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -203,7 +203,7 @@ public class DownloadedItem {
 		item.setAddedDate(new Date(info.getAddedDate()*1000));
 		item.setError(info.getError());
 		item.setErrorString(info.getErrorString());
-		item.setId(info.getId());
+		item.setId(info.getHashString().toUpperCase()); //use hash as a unique id (upper case)
 		item.setFinished(info.getFinished());
 		item.setName(info.getName());
 		item.setStatus(info.getStatus());
