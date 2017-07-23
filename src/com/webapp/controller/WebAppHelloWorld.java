@@ -112,7 +112,7 @@ public class WebAppHelloWorld {
 		if (user.getGroups().contains(Constants.UserGroup.GROUP_ADMIN)) //admin sees it all
 			downloadedItems = itemRepository.findAll();
 		else if (user.getGroups().contains(Constants.UserGroup.GROUP_USER)) {
-			downloadedItems = itemRepository.findUserItemsSorted(user.getUsername());
+			downloadedItems = itemRepository.findUserItemsSorted(user);
 		}
 		
 		model.addObject("downloadedItemsList", downloadedItems);

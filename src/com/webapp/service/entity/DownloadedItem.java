@@ -27,9 +27,6 @@ public class DownloadedItem {
     //hash of the torrent
     private String hash;
     
-    //list of users that have access to this item
-    private List<String> users;
-    
     //all files in the torrent
     private List<String> downloadedFiles;
     
@@ -210,14 +207,6 @@ public class DownloadedItem {
 
 	public void setProcessingStatus(String processingStatus) {
 		this.processingStatus = processingStatus;
-	}
-
-	public List<String> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<String> users) {
-		this.users = users;
 	}
 
 	public String getHash() {

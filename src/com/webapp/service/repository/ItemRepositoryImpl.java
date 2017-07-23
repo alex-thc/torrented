@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import com.webapp.service.entity.DownloadedItem;
+import com.webapp.service.entity.UserEntry;
 
 public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
@@ -75,9 +76,9 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 	}
 	
 	@Override
-	public List<DownloadedItem> findUserItemsSorted(String user) {
+	public List<DownloadedItem> findUserItemsSorted(UserEntry user) {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("users").is(user));
+		query.addCriteria(Criteria.where("hash").in(user.getTorrentHashes()));
 
 		return mongoTemplate.find(query.with(new Sort(Direction.DESC, "addedDate")), DownloadedItem.class);
 	}
