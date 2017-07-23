@@ -62,13 +62,22 @@ public class DownloadService {
 		if (com.webapp.util.Util.isMagnetLink(item.getUri())) {
 			try {
 				hash = com.webapp.util.Util.magnet2hash(item.getUri());
-				System.out.println("HASH: " + hash);
+				
 			} catch(InvalidMagnetLinkException ex) {
 				throw new RpcException("Failed to get hash from the magnet link. Is it valid?");
 			}
 		}
-		else return;
+		else {
+			try {
+				hash = com.webapp.util.Util.torrent2hash(item.getUri());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				throw new RpcException("Failed to get hash from the torrent file!");
+			}
+		}
 		
+		//System.out.println("HASH: " + hash);
+		//if (1==1) return;
 		
 		AddTorrentInfo addTorrentInfo = new AddTorrentInfo();
 		addTorrentInfo.setFilename(item.getUri());

@@ -1,10 +1,19 @@
 package com.webapp.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
 
 import com.webapp.exception.InvalidMagnetLinkException;
 
@@ -76,5 +85,61 @@ public abstract class Util {
         }
         String hash = matcher.group(1);
         return hash;
+    }
+    
+    public static String torrent2hash(String torrentUrl) throws IOException, NoSuchAlgorithmException {
+    	File file = new File("/tmp/" + UUID.randomUUID().toString());
+
+    	//generate a file that doesn't exist
+        while (file.exists()) {
+        	file = new File("/tmp/" + UUID.randomUUID().toString());
+        }
+        
+        //get the torrent file
+        URL url = new URL(torrentUrl);
+        try {
+        	FileUtils.copyURLToFile(url, file);
+        } catch (Exception ex) {
+        	//delete file
+        	FileUtils.forceDelete(file);
+        	//rethrow
+        	throw ex;
+        }
+        //System.out.println("[*] Done [Saved to \"" + file.getName() + "\"]");
+        
+        //get the sha1
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+        InputStream input = null;
+
+        try {
+            input = new FileInputStream(file);
+            StringBuilder builder = new StringBuilder();
+            while (!builder.toString().endsWith("4:info")) {
+                builder.append((char) input.read()); // It's ASCII anyway.
+            }
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            for (int data; (data = input.read()) > -1; output.write(data));
+            sha1.update(output.toByteArray(), 0, output.size() - 1);
+        } finally {
+            if (input != null) try { input.close(); } catch (IOException ignore) {}
+        }
+
+        byte[] hash = sha1.digest();
+        
+        //convert the bytes of the hash into a string
+        StringBuffer hexString = new StringBuffer();
+        
+        for (int i = 0; i < hash.length; i++) {
+            if ((0xff & hash[i]) < 0x10) {
+                hexString.append("0"
+                        + Integer.toHexString((0xFF & hash[i])));
+            } else {
+                hexString.append(Integer.toHexString(0xFF & hash[i]));
+            }
+        }
+        
+        FileUtils.forceDelete(file);
+        
+        return hexString.toString();
     }
 }
