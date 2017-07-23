@@ -97,14 +97,7 @@ public abstract class Util {
         
         //get the torrent file
         URL url = new URL(torrentUrl);
-        try {
-        	FileUtils.copyURLToFile(url, file);
-        } catch (Exception ex) {
-        	//delete file
-        	FileUtils.forceDelete(file);
-        	//rethrow
-        	throw ex;
-        }
+        FileUtils.copyURLToFile(url, file);
         //System.out.println("[*] Done [Saved to \"" + file.getName() + "\"]");
         
         //get the sha1

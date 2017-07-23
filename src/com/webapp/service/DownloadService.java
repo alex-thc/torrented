@@ -77,7 +77,7 @@ public class DownloadService {
 				hash = com.webapp.util.Util.torrent2hash(item.getUri());
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				throw new RpcException("Failed to get hash from the torrent file!");
+				throw new RpcException("Failed to get hash from the torrent file: " + ex.getMessage());
 			}
 		}
 		

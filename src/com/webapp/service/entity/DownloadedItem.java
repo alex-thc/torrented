@@ -172,7 +172,7 @@ public class DownloadedItem {
 		item.setStatus(info.getStatus());
 		item.setTotalSize(info.getTotalSize());
 		
-		item.setHash(info.getHashString());
+		item.setHash(info.getHashString().toUpperCase());
 		
 		if (info.getFiles() != null) {
 			List<String> downloadedFiles = new ArrayList<>();

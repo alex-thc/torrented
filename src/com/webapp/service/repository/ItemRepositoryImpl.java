@@ -78,6 +78,10 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 	@Override
 	public List<DownloadedItem> findUserItemsSorted(UserEntry user) {
 		Query query = new Query();
+		
+		if (user.getTorrentHashes() == null)
+			return null;
+		
 		query.addCriteria(Criteria.where("hash").in(user.getTorrentHashes()));
 
 		return mongoTemplate.find(query.with(new Sort(Direction.DESC, "addedDate")), DownloadedItem.class);
