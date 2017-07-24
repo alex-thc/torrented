@@ -38,6 +38,21 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 	}
 
 	@Override
+	public DownloadedItem getAndLockNonActiveItemToArchive() {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("archiveFile").is(null).and("archiveError").is(null).
+				and("isProcessing").is(false).and("isActive").is(false));
+
+		Update update = new Update();
+		update.set("isProcessing", true);
+
+		return mongoTemplate.findAndModify(
+				query, update,
+				new FindAndModifyOptions().returnNew(true), DownloadedItem.class);
+	}
+
+	
+	@Override
 	public List<DownloadedItem> getNonActiveItemsAddedBeforeDate(Date date) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("addedDate").lte(date).and("isProcessing").is(false).and("isActive").is(false));

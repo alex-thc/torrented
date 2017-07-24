@@ -19,4 +19,6 @@ public interface ItemRepositoryCustom {
 	public DownloadedItem getItemActiveFlagById(String id);
 	
 	public List<DownloadedItem> findAllNonActive();
+	
+	public DownloadedItem getAndLockNonActiveItemToArchive();
 }

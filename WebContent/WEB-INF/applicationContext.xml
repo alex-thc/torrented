@@ -43,6 +43,8 @@
     <bean name="convertService" class="com.webapp.service.ConvertService"/>
     
     <bean name="cleanupService" class="com.webapp.service.CleanupService"/>
+    
+    <bean name="archiveService" class="com.webapp.service.ArchiveService"/>
      
 	<task:scheduled-tasks scheduler="myScheduler">
     	<task:scheduled ref="convertService" method="runConversionRound" fixed-delay="10000"/>
@@ -59,11 +61,16 @@
 	<task:scheduled-tasks scheduler="myScheduler3">
     	<task:scheduled ref="convertService" method="updateProcessingPercentageComplete" fixed-delay="10000"/>
 	</task:scheduled-tasks>
+	
+	<task:scheduled-tasks scheduler="myScheduler4">
+    	<task:scheduled ref="archiveService" method="runArchiveRound" fixed-delay="10000"/>
+	</task:scheduled-tasks>
 
 	<task:scheduler id="myScheduler" pool-size="4"/>
 	<task:scheduler id="myScheduler1" pool-size="1"/>
 	<task:scheduler id="myScheduler2" pool-size="1"/>
 	<task:scheduler id="myScheduler3" pool-size="1"/>
+	<task:scheduler id="myScheduler4" pool-size="4"/>
 
 	<context:component-scan base-package="com.webapp.service" />
 </beans>

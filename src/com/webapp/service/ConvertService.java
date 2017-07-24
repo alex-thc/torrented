@@ -78,6 +78,11 @@ public class ConvertService {
 			return;
 		
 		for(DownloadedItem item : items) {
+			
+			//XXX: this is hacky
+			if (item.getProcessingStatus() == "Archiving")
+				continue;
+			
 			String fileName = "/tmp/handbrake.log." + item.getId();
 			String lastLine = com.webapp.util.Util.tail(fileName);
 			Matcher m = handbrakeLogPattern.matcher(lastLine);

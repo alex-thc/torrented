@@ -44,14 +44,18 @@ public class DownloadedItem {
     //video files
     private List<String> videoFiles;
     
-    //being processed by the converter
+    //being processed by the converter or the archiver
     private boolean isProcessing;
     private String processingStatus;
     
     //is an active download
     private boolean isActive;
     
+    //archive error (null when it was a success)
+    private String archiveError;
     
+    //archive file
+    private String archiveFile;
     
     
 	public Long getEta() {
@@ -264,6 +268,22 @@ public class DownloadedItem {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public String getArchiveError() {
+		return archiveError;
+	}
+
+	public void setArchiveError(String archiveError) {
+		this.archiveError = archiveError;
+	}
+
+	public String getArchiveFile() {
+		return archiveFile;
+	}
+
+	public void setArchiveFile(String archiveFile) {
+		this.archiveFile = archiveFile;
 	}
 	
 }
