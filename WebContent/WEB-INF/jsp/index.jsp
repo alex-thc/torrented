@@ -97,7 +97,7 @@ body {
         <tr>
             <c:choose>
 			  <c:when test="${not empty item.archiveFile}">
-			    <td><a href="welcome.html?file=${item.archiveFile}">${item.name}</a></td>
+			    <td><a href="download.html?file=${item.archiveFile}">${item.name}</a></td>
 			  </c:when>
 			  <c:otherwise>
 			    <td>${item.name}</td>

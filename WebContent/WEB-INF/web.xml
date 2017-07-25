@@ -16,6 +16,7 @@
         <servlet-name>webapp</servlet-name>
         <url-pattern>/welcome.jsp</url-pattern>
         <url-pattern>/welcome.html</url-pattern>
+        <url-pattern>/download.html</url-pattern>
         <url-pattern>/login.jsp</url-pattern>
         <url-pattern>/login.html</url-pattern>
         <url-pattern>*.html</url-pattern>

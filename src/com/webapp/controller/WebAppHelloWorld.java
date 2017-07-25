@@ -52,7 +52,7 @@ public class WebAppHelloWorld {
 	@RequestMapping("/welcome")
 	public ModelAndView helloWorld(@RequestParam("file") String file) {
 	
-		LinkEntry linkEntry = new LinkEntry(file);
+		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_VIDEO, -1);
 		linkRepository.save(linkEntry);
 		
 		Map<String, Object> model = new HashMap<>();
@@ -60,6 +60,34 @@ public class WebAppHelloWorld {
 		model.put("file", file);
 
 		return new ModelAndView("welcome", "model", model);
+	}
+	
+	@RequestMapping("/download")
+	public ModelAndView download(
+			@RequestParam("file") String file, 
+			@CookieValue(value = "authenticated", defaultValue = "false") String authCookie,
+			@CookieValue(value = "username", defaultValue = "") String username) {
+	
+		//first, make sure we're logged in
+		if (! authCookie.equals("true")) {
+			return new ModelAndView(new RedirectView("login"));
+		}
+		
+		UserEntry user = userRepository.findOne(username);
+		if (user == null) {
+			System.out.println("Failed to get user by username: " + username);
+			return new ModelAndView(new RedirectView("login"));
+		}
+		
+		//generate the link entry
+		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_ARCHIVE, 1);
+		linkRepository.save(linkEntry);
+		
+		Map<String, Object> model = new HashMap<>();
+		model.put("id", linkEntry.getId().toString().replaceAll("-", ""));
+		model.put("file", file);
+
+		return new ModelAndView("download", "model", model);
 	}
 	
 	@RequestMapping("/")

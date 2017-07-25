@@ -8,4 +8,9 @@ public abstract class Constants {
 		GROUP_ADMIN, 
 		GROUP_USER
 	}
+	
+	public enum FileType {
+		FILE_VIDEO,
+		FILE_ARCHIVE
+	}
 }
