@@ -95,7 +95,14 @@ body {
     </tr>
     <c:forEach items="${downloadedItemsList}" var="item" varStatus="status">
         <tr>
-            <td>${item.name}</td>
+            <c:choose>
+			  <c:when test="${not empty item.archiveFile}">
+			    <td><a href="welcome.html?file=${item.archiveFile}">${item.name}</a></td>
+			  </c:when>
+			  <c:otherwise>
+			    <td>${item.name}</td>
+			  </c:otherwise>
+			</c:choose>
             <td>${item.addedDate}</td>
             <td>
             	<c:choose>
