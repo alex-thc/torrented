@@ -17,7 +17,7 @@ public class LinkEntry {
 	private String link;
 	
 	private Constants.FileType type; //archive or video
-	private int lifeCounter; //how many lives we have (-1 - unlimited)
+	private int lifeCounter = -1;; //how many lives we have (-1 - unlimited)
 	
 	@Indexed(expireAfterSeconds=86400)
 	private Date createdDate;
