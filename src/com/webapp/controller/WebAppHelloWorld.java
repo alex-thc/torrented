@@ -26,6 +26,7 @@ import com.webapp.service.LoginInfo;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.entity.LinkEntry;
 import com.webapp.service.entity.UserEntry;
+import com.webapp.service.entity.embedded.Session;
 import com.webapp.service.repository.ItemRepository;
 import com.webapp.service.repository.LinkRepository;
 import com.webapp.service.repository.UserRepository;
@@ -183,6 +184,9 @@ public class WebAppHelloWorld {
 			request.setAttribute("message", "Invalid credentials!!");
 			return model;
 		}
+		
+		Session session = new Session();
+		userRepository.addSessionObject(userInfo, session);
 		
 		Cookie authCookie = new Cookie("authenticated", "true");
 		authCookie.setMaxAge(3600*72);

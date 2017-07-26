@@ -7,12 +7,6 @@
 
 \f0\fs24 \cf0 nonce in web requests and login? (protect from replay attacks)\
 \
-+create an archive from the torrent content\
-   +archive command\
-   +display archive on the webpage\
-   +temp link for archive download (like a gen-link page or something)\
-   +file download\
-\
 check cookie in welcome handler?\
 \
 https?\
@@ -20,11 +14,15 @@ https?\
 per-user limits?\
   activity collection?\
   limit number of downloads per day for non-video files?\
-     add type to link-entry (need a different base path for archives anyway)?\
   limit number of new torrents per day?\
 \
 file not found on disk?\
+\
 cookie id hash - store a id -> (authenticated,username in the db)?\
+ +generate and store session objects\
+ clean up old sessions?\
+ get user object based on the session in all controller methods?\
+\
 check for free space before starting the download?\
 display username?\
 user registration page?\

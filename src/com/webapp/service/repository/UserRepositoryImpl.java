@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.entity.UserEntry;
+import com.webapp.service.entity.embedded.Session;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 
@@ -27,10 +28,21 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public void grantAccessToHash(UserEntry user, String hash) {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("username").is(user.getUsername())); //we need to make sure that we don't conflict with the conversion thread resetting the status
+		query.addCriteria(Criteria.where("username").is(user.getUsername()));
 		
 		Update update = new Update();
 		update.addToSet("torrentHashes", hash);
+		
+		mongoTemplate.updateFirst(query, update, UserEntry.class);
+	}
+	
+	@Override
+	public void addSessionObject(UserEntry user, Session session) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("username").is(user.getUsername()));
+		
+		Update update = new Update();
+		update.push("sessions", session);
 		
 		mongoTemplate.updateFirst(query, update, UserEntry.class);
 	}

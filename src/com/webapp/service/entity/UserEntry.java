@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.webapp.service.entity.embedded.Session;
 import com.webapp.util.Constants;
 
 @Document
@@ -15,6 +16,8 @@ public class UserEntry {
 	
 	List<Constants.UserGroup> groups; //permission groups
 	List<String> torrentHashes; //torrent hashes that this user has access to (uppercase)
+	
+    private List<Session> sessions;
 	
 	public List<String> getTorrentHashes() {
 		return torrentHashes;
@@ -40,5 +43,12 @@ public class UserEntry {
 	
 	public UserEntry() {
 		
+	}
+	
+	public List<Session> getSessions() {
+		return sessions;
+	}
+	public void setSessions(List<Session> sessions) {
+		this.sessions = sessions;
 	}
 }
