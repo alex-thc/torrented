@@ -23,7 +23,7 @@ public class DownloadedItem {
 	private String name;
     private Long status;
     private Long totalSize;
-    
+        
     //active stats
     private Long eta;
     private Double percentDone;

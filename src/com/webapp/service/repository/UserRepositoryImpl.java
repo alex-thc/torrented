@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.mongodb.BasicDBObject;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.entity.UserEntry;
 import com.webapp.service.entity.embedded.Session;
@@ -45,6 +46,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		update.push("sessions", session);
 		
 		mongoTemplate.updateFirst(query, update, UserEntry.class);
+	}
+	
+	@Override
+	public void removeExpiredSessions(Date date) {
+		Update update = new Update();
+		update.pull("sessions", new BasicDBObject("dateCreated", new BasicDBObject("$lte", date)));
+		
+		mongoTemplate.updateMulti(new Query(), update, UserEntry.class);
 	}
 	
 }
