@@ -52,7 +52,7 @@ public class WebAppHelloWorld {
 	@RequestMapping("/welcome")
 	public ModelAndView helloWorld(@RequestParam("file") String file) {
 	
-		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_VIDEO, -1);
+		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_VIDEO, Constants.VIDEO_LINK_LIVES);
 		linkRepository.save(linkEntry);
 		
 		Map<String, Object> model = new HashMap<>();
@@ -80,7 +80,7 @@ public class WebAppHelloWorld {
 		}
 		
 		//generate the link entry
-		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_ARCHIVE, 1);
+		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_ARCHIVE, Constants.ARCHIVE_LINK_LIVES);
 		linkRepository.save(linkEntry);
 		
 		Map<String, Object> model = new HashMap<>();

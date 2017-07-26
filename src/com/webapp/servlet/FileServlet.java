@@ -23,6 +23,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.webapp.service.entity.LinkEntry;
 import com.webapp.service.repository.LinkRepository;
+import com.webapp.util.Constants;
+import com.webapp.util.Constants.FileType;
 
 
 
@@ -45,10 +47,6 @@ public class FileServlet extends HttpServlet {
     private static final long DEFAULT_EXPIRE_TIME = 604800000L; // ..ms = 1 week.
     private static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
 
-    // Properties ---------------------------------------------------------------------------------
-
-    private String basePath;
-
     // Actions ------------------------------------------------------------------------------------
 
     /**
@@ -58,26 +56,6 @@ public class FileServlet extends HttpServlet {
     public void init() throws ServletException {
     	
     	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
-
-        // Get base path (path to get all resources from) as init parameter.
-        this.basePath = getInitParameter("basePath");
-
-        // Validate base path.
-        if (this.basePath == null) {
-            throw new ServletException("FileServlet init param 'basePath' is required.");
-        } else {
-            File path = new File(this.basePath);
-            if (!path.exists()) {
-                throw new ServletException("FileServlet init param 'basePath' value '"
-                    + this.basePath + "' does actually not exist in file system.");
-            } else if (!path.isDirectory()) {
-                throw new ServletException("FileServlet init param 'basePath' value '"
-                    + this.basePath + "' is actually not a directory in file system.");
-            } else if (!path.canRead()) {
-                throw new ServletException("FileServlet init param 'basePath' value '"
-                    + this.basePath + "' is actually not readable in file system.");
-            }
-        }
     }
 
     /**
@@ -121,11 +99,19 @@ public class FileServlet extends HttpServlet {
         //System.out.println("ORIG: " + requestedFile);
         // Find out the real link (we need to strip the leading "/")
         //linkTable.releaseLink(Long.valueOf(requestedFile.substring(1)));
-        requestedFile = linkRepository.findOne(UUID.fromString(requestedFile
+        LinkEntry linkEntry = linkRepository.findOne(UUID.fromString(requestedFile
         		.substring(1)
         		.replaceFirst( "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5" )
-        		)).getLink();
+        		));
+        // Check if the link entry is there
+        if (linkEntry == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        
+        
         //System.out.println("PARSED: " + requestedFile);
+        requestedFile = linkEntry.getLink();
 
         // Check if file is actually supplied to the request URL.
         if (requestedFile == null) {
@@ -133,6 +119,30 @@ public class FileServlet extends HttpServlet {
             // Throw an exception, or send 404, or show default/warning page, or just ignore it.
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
+        }
+        
+        //check if the link is still valid
+        if (linkEntry.getLifeCounter() == 0) {
+        	System.out.println("The link is no longer valid for id " + linkEntry.getId().toString());
+        	response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        	return;
+        } else if (linkEntry.getLifeCounter() > 0)
+        	linkRepository.decrementLifeCounter(linkEntry);
+        
+        //figure out the base path based on the link type
+        String basePath = null;
+        
+        if (linkEntry.getType() == FileType.FILE_ARCHIVE)
+        	basePath = Constants.ARCHIVE_BASE_PATH;
+        else if (linkEntry.getType() == FileType.FILE_VIDEO)
+        	basePath = Constants.DOWNLOAD_BASE_PATH;
+        else
+        {
+        	//complain
+        	System.out.println("Type of the file is not supported: " + linkEntry.getType().toString()
+        			+ " for link with id " + linkEntry.getId().toString());
+        	response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED);
+        	return;
         }
 
         // URL-decode the file name (might contain spaces and on) and prepare file object.

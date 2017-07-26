@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.webapp.service.entity.LinkEntry;
 
-public interface LinkRepository extends MongoRepository<LinkEntry, UUID> {
+public interface LinkRepository extends MongoRepository<LinkEntry, UUID>, LinkRepositoryCustom {
 
 }
 

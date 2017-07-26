@@ -26,10 +26,10 @@
 	<servlet>
     	<servlet-name>fileServlet</servlet-name>
     	<servlet-class>com.webapp.servlet.FileServlet</servlet-class>
-    	<init-param>
+<!--     	<init-param>
         	<param-name>basePath</param-name>
         	<param-value>/data</param-value>
-    	</init-param>
+    	</init-param> -->
 	</servlet>
 
     <servlet-mapping>
