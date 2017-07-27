@@ -16,4 +16,11 @@ public abstract class Constants {
 		FILE_VIDEO,
 		FILE_ARCHIVE
 	}
+	
+	public enum ActivityType {
+		LOGIN,
+		SUBMIT_ITEM,
+		DOWNLOAD_VIDEO,
+		DOWNLOAD_ARCHIVE
+	}
 }

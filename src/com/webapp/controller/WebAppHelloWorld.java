@@ -23,10 +23,12 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.webapp.service.DownloadService;
 import com.webapp.service.Item;
 import com.webapp.service.LoginInfo;
+import com.webapp.service.entity.ActivityEntry;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.entity.LinkEntry;
 import com.webapp.service.entity.UserEntry;
 import com.webapp.service.entity.embedded.Session;
+import com.webapp.service.repository.ActivityRepository;
 import com.webapp.service.repository.ItemRepository;
 import com.webapp.service.repository.LinkRepository;
 import com.webapp.service.repository.UserRepository;
@@ -50,6 +52,9 @@ public class WebAppHelloWorld {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private ActivityRepository activityRepository;
+	
 	@RequestMapping("/welcome")
 	public ModelAndView helloWorld(@RequestParam("file") String file, 
 			@CookieValue(value = "session", defaultValue = "") String sessionId) {
@@ -60,7 +65,7 @@ public class WebAppHelloWorld {
 			return new ModelAndView(new RedirectView("login"));
 		}
 	
-		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_VIDEO, Constants.VIDEO_LINK_LIVES);
+		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_VIDEO, Constants.VIDEO_LINK_LIVES, user.getUsername());
 		linkRepository.save(linkEntry);
 		
 		Map<String, Object> model = new HashMap<>();
@@ -83,7 +88,7 @@ public class WebAppHelloWorld {
 		}
 		
 		//generate the link entry
-		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_ARCHIVE, Constants.ARCHIVE_LINK_LIVES);
+		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_ARCHIVE, Constants.ARCHIVE_LINK_LIVES, user.getUsername());
 		linkRepository.save(linkEntry);
 		
 		Map<String, Object> model = new HashMap<>();
@@ -162,6 +167,8 @@ public class WebAppHelloWorld {
 			return new ModelAndView("submit", "error", e.getMessage());
 		}
 		
+		activityRepository.save(new ActivityEntry(Constants.ActivityType.SUBMIT_ITEM, user.getUsername()));
+		
 		return new ModelAndView("submit", "error", null);
     }
 
@@ -193,6 +200,8 @@ public class WebAppHelloWorld {
 		Cookie authCookie = new Cookie("session", session.getId());
 		authCookie.setMaxAge(3600*24);
 		response.addCookie(authCookie);
+		
+		activityRepository.save(new ActivityEntry(Constants.ActivityType.LOGIN, userInfo.getUsername()));
 		
 		//return mainView(session.getId());
 		return new ModelAndView(new RedirectView("/WebAppTest"));

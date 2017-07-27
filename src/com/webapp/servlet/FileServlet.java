@@ -21,7 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import com.webapp.service.entity.ActivityEntry;
 import com.webapp.service.entity.LinkEntry;
+import com.webapp.service.repository.ActivityRepository;
 import com.webapp.service.repository.LinkRepository;
 import com.webapp.util.Constants;
 import com.webapp.util.Constants.FileType;
@@ -40,6 +42,9 @@ public class FileServlet extends HttpServlet {
 	
 	@Autowired
 	private LinkRepository linkRepository;
+	
+	@Autowired
+	private ActivityRepository activityRepository;
 
     // Constants ----------------------------------------------------------------------------------
 
@@ -131,11 +136,16 @@ public class FileServlet extends HttpServlet {
         
         //figure out the base path based on the link type
         String basePath = null;
+        Constants.ActivityType activityType = null;
         
-        if (linkEntry.getType() == FileType.FILE_ARCHIVE)
+        if (linkEntry.getType() == FileType.FILE_ARCHIVE) {
         	basePath = Constants.ARCHIVE_BASE_PATH;
-        else if (linkEntry.getType() == FileType.FILE_VIDEO)
+        	activityType = Constants.ActivityType.DOWNLOAD_ARCHIVE;
+        }
+        else if (linkEntry.getType() == FileType.FILE_VIDEO) {
         	basePath = Constants.DOWNLOAD_BASE_PATH;
+        	activityType = Constants.ActivityType.DOWNLOAD_VIDEO;
+        }
         else
         {
         	//complain
@@ -144,6 +154,9 @@ public class FileServlet extends HttpServlet {
         	response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED);
         	return;
         }
+        
+        // Save the activity entry
+        activityRepository.save(new ActivityEntry(activityType, linkEntry.getUser()));
 
         // URL-decode the file name (might contain spaces and on) and prepare file object.
         File file = new File(basePath, URLDecoder.decode(requestedFile, "UTF-8"));

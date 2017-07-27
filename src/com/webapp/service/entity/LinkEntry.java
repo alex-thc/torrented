@@ -19,6 +19,8 @@ public class LinkEntry {
 	private Constants.FileType type; //archive or video
 	private int lifeCounter = -1; //how many lives we have (-1 - unlimited)
 	
+	private String user;
+	
 	@Indexed(expireAfterSeconds=86400)
 	private Date createdDate;
 	
@@ -31,12 +33,13 @@ public class LinkEntry {
 		return link;
 	}
 
-	public LinkEntry(String link, Constants.FileType type, int lifeCounter) {
+	public LinkEntry(String link, Constants.FileType type, int lifeCounter, String user) {
 		this.link = link;
 		this.id = UUID.randomUUID();
 		this.createdDate = new Date();
 		this.type = type;
 		this.setLifeCounter(lifeCounter);
+		this.user = user;
 	}
 
 	public Constants.FileType getType() {
@@ -53,6 +56,14 @@ public class LinkEntry {
 
 	public void setLifeCounter(int lifeCounter) {
 		this.lifeCounter = lifeCounter;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 	
 }
