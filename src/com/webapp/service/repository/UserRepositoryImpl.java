@@ -56,4 +56,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		mongoTemplate.updateMulti(new Query(), update, UserEntry.class);
 	}
 	
+	@Override
+	public UserEntry findBySessionId(String sessionId) {
+		return mongoTemplate.findOne(
+				new Query(Criteria.where("sessions._id").is(sessionId)),
+				UserEntry.class);
+	}
+	
 }

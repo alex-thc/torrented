@@ -51,7 +51,14 @@ public class WebAppHelloWorld {
 	private UserRepository userRepository;
 	
 	@RequestMapping("/welcome")
-	public ModelAndView helloWorld(@RequestParam("file") String file) {
+	public ModelAndView helloWorld(@RequestParam("file") String file, 
+			@CookieValue(value = "session", defaultValue = "") String sessionId) {
+		
+		UserEntry user = userRepository.findBySessionId(sessionId);
+		if (user == null) {
+			System.out.println("Failed to get user by session: " + sessionId);
+			return new ModelAndView(new RedirectView("login"));
+		}
 	
 		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_VIDEO, Constants.VIDEO_LINK_LIVES);
 		linkRepository.save(linkEntry);
@@ -66,17 +73,12 @@ public class WebAppHelloWorld {
 	@RequestMapping("/download")
 	public ModelAndView download(
 			@RequestParam("file") String file, 
-			@CookieValue(value = "authenticated", defaultValue = "false") String authCookie,
-			@CookieValue(value = "username", defaultValue = "") String username) {
+			@CookieValue(value = "session", defaultValue = "") String sessionId) {
 	
 		//first, make sure we're logged in
-		if (! authCookie.equals("true")) {
-			return new ModelAndView(new RedirectView("login"));
-		}
-		
-		UserEntry user = userRepository.findOne(username);
+		UserEntry user = userRepository.findBySessionId(sessionId);
 		if (user == null) {
-			System.out.println("Failed to get user by username: " + username);
+			System.out.println("Failed to get user by session: " + sessionId);
 			return new ModelAndView(new RedirectView("login"));
 		}
 		
@@ -93,17 +95,12 @@ public class WebAppHelloWorld {
 	
 	@RequestMapping("/")
 	public ModelAndView mainView(
-			@CookieValue(value = "authenticated", defaultValue = "false") String authCookie,
-			@CookieValue(value = "username", defaultValue = "") String username
+			@CookieValue(value = "session", defaultValue = "") String sessionId
 			) {
  
-		if (! authCookie.equals("true")) {
-			return new ModelAndView(new RedirectView("login"));
-		}
-		
-		UserEntry user = userRepository.findOne(username);
+		UserEntry user = userRepository.findBySessionId(sessionId);
 		if (user == null) {
-			System.out.println("Failed to get user by username: " + username);
+			System.out.println("Failed to get user by session: " + sessionId);
 			return new ModelAndView(new RedirectView("login"));
 		}
 		
@@ -145,13 +142,18 @@ public class WebAppHelloWorld {
 	@RequestMapping(value="/submit", method=RequestMethod.POST)
     public ModelAndView itemSubmit(
     		@RequestParam("newItemUri") String newItemUri,
-    		@CookieValue(value = "username", defaultValue = "") String username
+    		@CookieValue(value = "session", defaultValue = "") String sessionId
     		) {
 		System.out.println("Item uri: " + newItemUri + " " + downloadService.getMessage());
 		
-		UserEntry user = userRepository.findOne(username);
+//		UserEntry user = userRepository.findOne(username);
+//		if (user == null) {
+//			new ModelAndView("submit", "error", "Failed to get user by username: " + username);
+//		}
+		UserEntry user = userRepository.findBySessionId(sessionId);
 		if (user == null) {
-			new ModelAndView("submit", "error", "Failed to get user by username: " + username);
+			System.out.println("Failed to get user by session: " + sessionId);
+			return new ModelAndView(new RedirectView("login"));
 		}
 		
 		try {
@@ -188,14 +190,11 @@ public class WebAppHelloWorld {
 		Session session = new Session();
 		userRepository.addSessionObject(userInfo, session);
 		
-		Cookie authCookie = new Cookie("authenticated", "true");
-		authCookie.setMaxAge(3600*72);
+		Cookie authCookie = new Cookie("session", session.getId());
+		authCookie.setMaxAge(3600*24);
 		response.addCookie(authCookie);
 		
-		Cookie usernameCookie = new Cookie("username", userInfo.getUsername());
-		usernameCookie.setMaxAge(3600*72);
-		response.addCookie(usernameCookie);
-		
-		return mainView("true", userInfo.getUsername());
+		//return mainView(session.getId());
+		return new ModelAndView(new RedirectView("/WebAppTest"));
 	}
 }
