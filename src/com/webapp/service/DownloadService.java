@@ -12,8 +12,10 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webapp.exception.InvalidMagnetLinkException;
+import com.webapp.service.entity.ActivityEntry;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.entity.UserEntry;
+import com.webapp.service.repository.ActivityRepository;
 import com.webapp.service.repository.ItemRepository;
 import com.webapp.service.repository.UserRepository;
 import com.webapp.util.Constants;
@@ -43,6 +45,9 @@ public class DownloadService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private ActivityRepository activityRepository;
 	
 	public DownloadService() {		
 		RpcConfiguration rpcConfig = new RpcConfiguration();
@@ -103,6 +108,9 @@ public class DownloadService {
 		addTorrentInfo.setPaused(false);
 		//TODO: check for free space?
 		AddedTorrentInfo addedInfo = trClient.addTorrent(addTorrentInfo);
+		
+		//store the activity entry so that we can track who creates new items
+		activityRepository.save(new ActivityEntry(Constants.ActivityType.SUBMIT_NEW_ITEM, user.getUsername()));
 	}
 	
 	public List<TorrentInfo> getAllItems() throws RpcException {

@@ -52,9 +52,6 @@ public class WebAppHelloWorld {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@Autowired
-	private ActivityRepository activityRepository;
-	
 	@RequestMapping("/welcome")
 	public ModelAndView helloWorld(@RequestParam("file") String file, 
 			@CookieValue(value = "session", defaultValue = "") String sessionId) {
@@ -167,8 +164,6 @@ public class WebAppHelloWorld {
 			return new ModelAndView("submit", "error", e.getMessage());
 		}
 		
-		activityRepository.save(new ActivityEntry(Constants.ActivityType.SUBMIT_ITEM, user.getUsername()));
-		
 		return new ModelAndView("submit", "error", null);
     }
 
@@ -200,8 +195,6 @@ public class WebAppHelloWorld {
 		Cookie authCookie = new Cookie("session", session.getId());
 		authCookie.setMaxAge(3600*24);
 		response.addCookie(authCookie);
-		
-		activityRepository.save(new ActivityEntry(Constants.ActivityType.LOGIN, userInfo.getUsername()));
 		
 		//return mainView(session.getId());
 		return new ModelAndView(new RedirectView("/WebAppTest"));

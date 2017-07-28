@@ -18,9 +18,6 @@ public abstract class Constants {
 	}
 	
 	public enum ActivityType {
-		LOGIN,
-		SUBMIT_ITEM,
-		DOWNLOAD_VIDEO,
-		DOWNLOAD_ARCHIVE
+		SUBMIT_NEW_ITEM
 	}
 }
