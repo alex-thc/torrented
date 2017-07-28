@@ -61,6 +61,10 @@ public class WebAppHelloWorld {
 			System.out.println("Failed to get user by session: " + sessionId);
 			return new ModelAndView(new RedirectView("login"));
 		}
+		
+		if (linkRepository.countNewUserLinksLast24h(user.getUsername()) >= Constants.NEW_LINKS_PER_DAY_LIMIT) {
+			return new ModelAndView("error","message","Exceeded number of new links per day");
+		}
 	
 		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_VIDEO, Constants.VIDEO_LINK_LIVES, user.getUsername());
 		linkRepository.save(linkEntry);
@@ -82,6 +86,10 @@ public class WebAppHelloWorld {
 		if (user == null) {
 			System.out.println("Failed to get user by session: " + sessionId);
 			return new ModelAndView(new RedirectView("login"));
+		}
+		
+		if (linkRepository.countNewUserLinksLast24h(user.getUsername()) >= Constants.NEW_LINKS_PER_DAY_LIMIT) {
+			return new ModelAndView("error","message","Exceeded number of new links per day");
 		}
 		
 		//generate the link entry

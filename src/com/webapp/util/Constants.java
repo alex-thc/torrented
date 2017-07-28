@@ -6,6 +6,9 @@ public abstract class Constants {
 	
 	public static final int ARCHIVE_LINK_LIVES = 1; //use once
 	public static final int VIDEO_LINK_LIVES = -1; //unlimited
+	
+	public static final int NEW_ITEMS_PER_DAY_LIMIT = 4;
+	public static final int NEW_LINKS_PER_DAY_LIMIT = 10;
 
 	public enum UserGroup {
 		GROUP_ADMIN, 

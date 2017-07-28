@@ -95,14 +95,11 @@ body {
     </tr>
     <c:forEach items="${downloadedItemsList}" var="item" varStatus="status">
         <tr>
-            <c:choose>
-			  <c:when test="${not empty item.archiveFile}">
-			    <td><a href="download.html?file=${item.archiveFile}">${item.name}</a></td>
-			  </c:when>
-			  <c:otherwise>
-			    <td>${item.name}</td>
-			  </c:otherwise>
-			</c:choose>
+            <td>${item.name}
+			  <c:if test="${not empty item.archiveFile}">
+			    <a href="download.html?file=${item.archiveFile}">[tar.gz]</a>
+			  </c:if>
+		    </td>
             <td>${item.addedDate}</td>
             <td>
             	<c:choose>

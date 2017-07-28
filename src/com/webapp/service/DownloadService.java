@@ -101,6 +101,10 @@ public class DownloadService {
 			return;
 		}
 		
+		//check if we ran out of new items
+		if (activityRepository.countNewUserItemsLast24h(user.getUsername()) >= Constants.NEW_ITEMS_PER_DAY_LIMIT)
+			throw new RpcException("You reached the limit of new items per day");
+		
 		//try to download it
 		AddTorrentInfo addTorrentInfo = new AddTorrentInfo();
 		addTorrentInfo.setFilename(item.getUri());

@@ -17,34 +17,27 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.webapp.service.entity.ActivityEntry;
 import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.entity.LinkEntry;
 import com.webapp.service.entity.UserEntry;
+import com.webapp.util.Constants;
 
-public class LinkRepositoryImpl implements LinkRepositoryCustom {
+public class ActivityRepositoryImpl implements ActivityRepositoryCustom {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	@Override
-	public void decrementLifeCounter(LinkEntry linkEntry) {
-		Query query = new Query();
-		query.addCriteria(Criteria.where("_id").is(linkEntry.getId()));
-		
-		Update update = new Update();
-		update.inc("lifeCounter", -1);
-		
-		mongoTemplate.updateFirst(query, update, LinkEntry.class);
-	}
-
-	@Override
-	public long countNewUserLinksLast24h(String username) {
+	public long countNewUserItemsLast24h(String username) {
 		Calendar calendar = Calendar.getInstance(); // this would default to now
 		calendar.add(Calendar.DAY_OF_MONTH, -1);
 		
 		Query query = new Query();
-		query.addCriteria(Criteria.where("user").is(username).and("createdDate").gte(calendar.getTime()));
+		query.addCriteria(Criteria.where("user").is(username)
+				.and("type").is(Constants.ActivityType.SUBMIT_NEW_ITEM)
+				.and("ts").gte(calendar.getTime()));
 		
-		return mongoTemplate.count(query, LinkEntry.class);
+		return mongoTemplate.count(query, ActivityEntry.class);
 	}
 }
