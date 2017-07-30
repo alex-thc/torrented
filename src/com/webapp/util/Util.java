@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.URL;
+import java.nio.file.FileStore;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -134,5 +136,11 @@ public abstract class Util {
         FileUtils.forceDelete(file);
         
         return hexString.toString().toUpperCase();
+    }
+    
+    public static boolean checkSpaceAvailable(String path) throws IOException {
+		FileStore fs = Files.getFileStore(new File(path).toPath());
+		
+		return (fs.getUsableSpace() >= Constants.AVAIL_SPACE_LIMIT_BYTES);
     }
 }

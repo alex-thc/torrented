@@ -2,6 +2,7 @@ package com.webapp.service;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ import com.webapp.util.Constants;
 import com.webapp.util.ShellCommand;
 import com.webapp.util.Util;
 
+import nl.stil4m.transmission.rpc.RpcException;
+
 @Service
 public class ConvertService {
 	@Autowired
@@ -28,6 +31,19 @@ public class ConvertService {
 	private Pattern handbrakeLogPattern = Pattern.compile("\\s([0-9]{1,2}\\.[0-9]{2})\\s%.*ETA\\s(\\w{9})");
 	
 	public void runConversionRound() {
+		
+		//check free space
+		try {
+			if (! Util.checkSpaceAvailable(BASE_PATH))
+			{
+				System.out.println("Skipping conversion round because not enough disk"
+						+ " space is available: " + BASE_PATH);
+				return;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
 		
 		DownloadedItem item = itemRepository.getAndLockNonActiveItemToConvert();
 		if (item == null) {

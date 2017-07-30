@@ -2,6 +2,7 @@ package com.webapp.service;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,19 @@ public class ArchiveService {
 	
 	public void runArchiveRound() {
 		
+		//check free space
+		try {
+			if (! Util.checkSpaceAvailable(Constants.ARCHIVE_BASE_PATH))
+			{
+				System.out.println("Skipping archive round because not enough disk"
+						+ " space is available: " + Constants.ARCHIVE_BASE_PATH);
+				return;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		
 		DownloadedItem item = itemRepository.getAndLockNonActiveItemToArchive();
 		if (item == null || item.getDownloadedFiles() == null || item.getDownloadedFiles().isEmpty()) {
 			//System.out.println("CONVERT: nothing to do");
@@ -53,9 +67,9 @@ public class ArchiveService {
 			item.setArchiveFile(out);
 			item.setArchiveError(null);
 		} catch (ShellCommandException e) {
-			System.out.println("CONVERT: " + e.getMessage());
-			System.out.println("CONVERT: " + e.getCmdLine());
-			System.out.println("CONVERT: " + e.getBufOutput());
+			System.out.println("ARCHIVE: " + e.getMessage());
+			System.out.println("ARCHIVE: " + e.getCmdLine());
+			System.out.println("ARCHIVE: " + e.getBufOutput());
 			
 			item.setArchiveFile(null);
 			item.setArchiveError(e.getBufOutput());

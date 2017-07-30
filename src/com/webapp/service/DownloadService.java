@@ -1,7 +1,9 @@
 package com.webapp.service;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileStore;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -105,12 +107,20 @@ public class DownloadService {
 		if (activityRepository.countNewUserItemsLast24h(user.getUsername()) >= Constants.NEW_ITEMS_PER_DAY_LIMIT)
 			throw new RpcException("You reached the limit of new items per day");
 		
+		//check free space
+		try {
+			if (! Util.checkSpaceAvailable(downloadDir))
+				throw new RpcException("Not enough free disk space");
+		} catch (IOException e) {
+			throw new RpcException("Failed to check free disk space: " + e.getMessage());
+		}
+		
 		//try to download it
 		AddTorrentInfo addTorrentInfo = new AddTorrentInfo();
 		addTorrentInfo.setFilename(item.getUri());
 		addTorrentInfo.setDownloadDir(downloadDir);
 		addTorrentInfo.setPaused(false);
-		//TODO: check for free space?
+		
 		AddedTorrentInfo addedInfo = trClient.addTorrent(addTorrentInfo);
 		
 		//store the activity entry so that we can track who creates new items
