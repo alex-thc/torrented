@@ -207,4 +207,37 @@ public class WebAppHelloWorld {
 		//return mainView(session.getId());
 		return new ModelAndView(new RedirectView("/WebAppTest"));
 	}
+	
+	@RequestMapping(value="/register",method=RequestMethod.GET)
+	public ModelAndView displayRegisterForm(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView("register");
+		LoginInfo loginInfo = new LoginInfo();
+		model.addObject("loginInfo", loginInfo);
+		return model;
+	}
+	
+	@RequestMapping(value="/register",method=RequestMethod.POST)
+	public ModelAndView executeRegister(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("loginInfo")LoginInfo loginInfo)
+	{
+//		UserEntry userInfo = userRepository.findOne(loginInfo.getUsername());
+//		
+//		if (userInfo == null || ! userInfo.getPassword().equals(loginInfo.getPassword())) {
+//			System.out.println("Failure to authenticate as " + loginInfo.getUsername());
+//			ModelAndView model = new ModelAndView("login");
+//			model.addObject("loginInfo", loginInfo);
+//			request.setAttribute("message", "Invalid credentials!!");
+//			return model;
+//		}
+//		
+//		Session session = new Session();
+//		userRepository.addSessionObject(userInfo, session);
+//		
+//		Cookie authCookie = new Cookie("session", session.getId());
+//		authCookie.setMaxAge(3600*24);
+//		response.addCookie(authCookie);
+		
+		//return mainView(session.getId());
+		return new ModelAndView(new RedirectView("/WebAppTest"));
+	}
 }

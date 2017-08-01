@@ -14,16 +14,24 @@
   				Error: ${message}
   			</c:when>
 		</c:choose>
-		<form:form id="loginForm" method="post" action="login" modelAttribute="loginInfo">
+		<form:form id="loginForm" method="post" action="register" modelAttribute="loginInfo">
 
 			<form:label path="username">Enter your user-name</form:label>
 			<form:input id="username" name="username" path="username" /><br>
 			<form:label path="username">Please enter your password</form:label>
 			<form:password id="password" name="password" path="password" /><br>
-			<input type="submit" value="Submit" />
+			<form:label path="inviteCode">Please enter the invite code (if you have one)</form:label>
+			<form:password id="inviteCode" name="invite code" path="inviteCode" /><br>
+			<input type="submit" value="Register" />
+			
+			<br><br><br>
+			By clicking "Register" you agree not to use this service
+			for anything substantially illegal, to treat kittens with
+			respect and to mischievously smile to strangers for 5 days.
+			
+			<br><br><br>
+			Limitations: 4 new items and 10 file downloads per day. Unlimited vids, yaay! 
+			
 		</form:form>
-		<form action="register" method="GET">
-      		<input type="submit" value="New user?" />
-    	</form>
 	</body>
 </html>
