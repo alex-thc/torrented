@@ -1,6 +1,8 @@
 package com.webapp.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.expression.spel.ast.Ternary;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -29,6 +32,7 @@ import com.webapp.service.entity.LinkEntry;
 import com.webapp.service.entity.UserEntry;
 import com.webapp.service.entity.embedded.Session;
 import com.webapp.service.repository.ActivityRepository;
+import com.webapp.service.repository.InvitationCodeRepository;
 import com.webapp.service.repository.ItemRepository;
 import com.webapp.service.repository.LinkRepository;
 import com.webapp.service.repository.UserRepository;
@@ -51,6 +55,9 @@ public class WebAppHelloWorld {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private InvitationCodeRepository invitationCodeRepository;
 	
 	@RequestMapping("/welcome")
 	public ModelAndView helloWorld(@RequestParam("file") String file, 
@@ -220,24 +227,56 @@ public class WebAppHelloWorld {
 	@RequestMapping(value="/register",method=RequestMethod.POST)
 	public ModelAndView executeRegister(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("loginInfo")LoginInfo loginInfo)
 	{
-//		UserEntry userInfo = userRepository.findOne(loginInfo.getUsername());
-//		
-//		if (userInfo == null || ! userInfo.getPassword().equals(loginInfo.getPassword())) {
-//			System.out.println("Failure to authenticate as " + loginInfo.getUsername());
-//			ModelAndView model = new ModelAndView("login");
-//			model.addObject("loginInfo", loginInfo);
-//			request.setAttribute("message", "Invalid credentials!!");
-//			return model;
-//		}
-//		
-//		Session session = new Session();
-//		userRepository.addSessionObject(userInfo, session);
-//		
-//		Cookie authCookie = new Cookie("session", session.getId());
-//		authCookie.setMaxAge(3600*24);
-//		response.addCookie(authCookie);
+		//check the inputs
+		if (
+		  loginInfo.getUsername() == null || loginInfo.getUsername().trim().isEmpty() ||
+		  loginInfo.getPassword() == null || loginInfo.getPassword().trim().isEmpty()
+		)
+		{
+			ModelAndView model = new ModelAndView("register");
+			model.addObject("loginInfo", loginInfo);
+			request.setAttribute("message", "Username and password cannot be empty");
+			return model;
+		}
 		
-		//return mainView(session.getId());
+		if (loginInfo.getInviteCode() == null || loginInfo.getInviteCode().trim().isEmpty())
+		{
+			ModelAndView model = new ModelAndView("register");
+			model.addObject("loginInfo", loginInfo);
+			request.setAttribute("message", "Sorry, but this stuff is invite-only for now");
+			return model;
+		}
+		
+		if (invitationCodeRepository.findByIdAndDate(loginInfo.getInviteCode().trim(), new Date()) == null) {
+			ModelAndView model = new ModelAndView("register");
+			model.addObject("loginInfo", loginInfo);
+			request.setAttribute("message", "Your invite code is not valid");
+			return model;
+		}
+		
+		if (userRepository.findByUsername(loginInfo.getUsername()) != null) {
+			ModelAndView model = new ModelAndView("register");
+			model.addObject("loginInfo", loginInfo);
+			request.setAttribute("message", "The user with this name already exists");
+			return model;
+		}
+		
+		//construct a new user object
+		UserEntry userInfo = new UserEntry();
+		userInfo.setUsername(loginInfo.getUsername());
+		userInfo.setPassword(loginInfo.getPassword());
+		userInfo.setGroups(Arrays.asList(Constants.UserGroup.GROUP_USER));
+		
+		//add a session right away
+		Session session = new Session();
+		userInfo.setSessions(Arrays.asList(session));
+		
+		userRepository.insert(userInfo);
+			
+		Cookie authCookie = new Cookie("session", session.getId());
+		authCookie.setMaxAge(3600*24);
+		response.addCookie(authCookie);
+
 		return new ModelAndView(new RedirectView("/WebAppTest"));
 	}
 }

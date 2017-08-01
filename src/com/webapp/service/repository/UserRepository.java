@@ -8,6 +8,6 @@ import com.webapp.service.entity.LinkEntry;
 import com.webapp.service.entity.UserEntry;
 
 public interface UserRepository extends MongoRepository<UserEntry, String>, UserRepositoryCustom {
-
+	UserEntry findByUsername(String id);
 }
 

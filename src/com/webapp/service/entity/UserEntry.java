@@ -28,6 +28,9 @@ public class UserEntry {
 	public List<Constants.UserGroup> getGroups() {
 		return groups;
 	}
+	public void setGroups(List<Constants.UserGroup> groups) {
+		this.groups = groups;
+	}
 	public String getUsername() {
 		return username;
 	}
