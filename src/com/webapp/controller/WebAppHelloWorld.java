@@ -122,6 +122,7 @@ public class WebAppHelloWorld {
 		}
 		
 		ModelAndView model = new ModelAndView("index");
+		model.addObject("user", user);
 		
 		if (user.getGroups().contains(Constants.UserGroup.GROUP_ADMIN))
 		{

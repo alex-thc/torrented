@@ -16,7 +16,7 @@ body {
 	<br>
 	<div style="text-align:center">
 		<h2>
-			Welcome to my torrent video streaming service<br> <br>
+			Welcome to my torrent video streaming service, ${user.username}<br> <br>
 			This service is for demonstration purposes only and all
 			copyright content will be eventually cleaned up.<br> <br>
 		</h2>
