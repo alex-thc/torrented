@@ -97,7 +97,7 @@ body {
         <tr>
             <td>${item.name}
 			  <c:if test="${not empty item.archiveFile}">
-			    <a href="download.html?file=${item.archiveFile}">[tar.gz]</a>
+			    <a href="download.html?file=${item.archiveFile}">[zip]</a>
 			  </c:if>
 		    </td>
             <td>${item.addedDate}</td>

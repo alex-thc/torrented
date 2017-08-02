@@ -45,6 +45,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
 		Update update = new Update();
 		update.set("isProcessing", true);
+		update.set("processingStatus", "Archiving");
 
 		return mongoTemplate.findAndModify(
 				query, update,

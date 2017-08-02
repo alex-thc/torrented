@@ -96,7 +96,7 @@ public class ConvertService {
 		for(DownloadedItem item : items) {
 			
 			//XXX: this is hacky
-			if (item.getProcessingStatus() == "Archiving")
+			if (item.getProcessingStatus().equals("Archiving"))
 				continue;
 			
 			String fileName = "/tmp/handbrake.log." + item.getId();

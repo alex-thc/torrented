@@ -30,8 +30,11 @@ public class ArchiveService {
 		String filesString = "";
 		for (String file : filesToAdd) filesString = filesString + file + " ";
 		
-		return "tar -zcvf " + Constants.ARCHIVE_BASE_PATH + "/" + outFileName 
-				+ " -C " + BASE_PATH + " " + filesString;
+		//return "tar -zcvf " + Constants.ARCHIVE_BASE_PATH + "/" + outFileName 
+		//		+ " -C " + BASE_PATH + " " + filesString;
+		return "cd " + BASE_PATH + " && " + 
+				"zip -0 -r " + Constants.ARCHIVE_BASE_PATH + "/" + outFileName +
+				" " + filesString;
 	}
 	
 	public void runArchiveRound() {
@@ -49,30 +52,30 @@ public class ArchiveService {
 			return;
 		}
 		
-		DownloadedItem item = itemRepository.getAndLockNonActiveItemToArchive();
-		if (item == null || item.getDownloadedFiles() == null || item.getDownloadedFiles().isEmpty()) {
+		DownloadedItem item = itemRepository.getAndLockNonActiveItemToArchive(); //this will also update processing status so that everyone knows whatsup
+		if (item == null) {
 			//System.out.println("CONVERT: nothing to do");
 			return;
 		}
 		
-		//update processing status so that everyone knows whatsup
-		itemRepository.setItemProcessingStatus(item, "Archiving");
-		
-		String out = item.getHash() + ".tgz";
-		
-		String archiveCmd = prepareArchiveCmd(item.getDownloadedFiles(), out);
-		
-		try {
-			ShellCommand.executeCommand(archiveCmd,"/tmp/archive.log." + item.getId());
-			item.setArchiveFile(out);
-			item.setArchiveError(null);
-		} catch (ShellCommandException e) {
-			System.out.println("ARCHIVE: " + e.getMessage());
-			System.out.println("ARCHIVE: " + e.getCmdLine());
-			System.out.println("ARCHIVE: " + e.getBufOutput());
+		if (item.getDownloadedFiles() != null && ! item.getDownloadedFiles().isEmpty())
+		{
+			String out = item.getHash() + ".zip";
 			
-			item.setArchiveFile(null);
-			item.setArchiveError(e.getBufOutput());
+			String archiveCmd = prepareArchiveCmd(item.getDownloadedFiles(), out);
+			
+			try {
+				ShellCommand.executeCommand(archiveCmd,"/tmp/archive.log." + item.getId());
+				item.setArchiveFile(out);
+				item.setArchiveError(null);
+			} catch (ShellCommandException e) {
+				System.out.println("ARCHIVE: " + e.getMessage());
+				System.out.println("ARCHIVE: " + e.getCmdLine());
+				System.out.println("ARCHIVE: " + e.getBufOutput());
+				
+				item.setArchiveFile(null);
+				item.setArchiveError(e.getMessage());
+			}
 		}
 		
 		item.setProcessingStatus("");
