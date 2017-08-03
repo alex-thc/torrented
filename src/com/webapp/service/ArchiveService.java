@@ -28,7 +28,7 @@ public class ArchiveService {
 	
 	public String prepareArchiveCmd(List<String> filesToAdd, String outFileName) {
 		String filesString = "";
-		for (String file : filesToAdd) filesString = filesString + file + " ";
+		for (String file : filesToAdd) filesString = filesString + "\"" + file + "\"" + " ";
 		
 		//return "tar -zcvf " + Constants.ARCHIVE_BASE_PATH + "/" + outFileName 
 		//		+ " -C " + BASE_PATH + " " + filesString;
