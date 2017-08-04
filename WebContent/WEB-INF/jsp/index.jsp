@@ -84,20 +84,21 @@ body {
     </table>
     
     <h3>
-		Videos
+		Downloaded items
 	</h3>
 	<table>
     <tr>
         <th>Name</th>
         <th>Added Date</th>
         <th>Status</th>
-        <th>Files</th>
+        <th>Video Files</th>
+        <th>All Files</th>
     </tr>
     <c:forEach items="${downloadedItemsList}" var="item" varStatus="status">
         <tr>
             <td>${item.name}
 			  <c:if test="${not empty item.archiveFile}">
-			    <a href="download.html?file=${item.archiveFile}">[zip]</a>
+			    <a href="download.html?file=${item.archiveFile}&type=archive">[zip]</a>
 			  </c:if>
 		    </td>
             <td>${item.addedDate}</td>
@@ -117,6 +118,11 @@ body {
             <td>
             <c:forEach items="${item.videoFiles}" var="video" varStatus="status">
             	<a href="welcome.html?file=${video}">${video}</a><br/>
+            </c:forEach>
+            </td>
+            <td>
+            <c:forEach items="${item.downloadedFiles}" var="file" varStatus="status1">
+            	<a href="download.html?file=${file}&type=file">${file}</a><br/>
             </c:forEach>
             </td>
         </tr>

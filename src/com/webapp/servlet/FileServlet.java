@@ -139,7 +139,7 @@ public class FileServlet extends HttpServlet {
         if (linkEntry.getType() == FileType.FILE_ARCHIVE) {
         	basePath = Constants.ARCHIVE_BASE_PATH;
         }
-        else if (linkEntry.getType() == FileType.FILE_VIDEO) {
+        else if (linkEntry.getType() == FileType.FILE_VIDEO || linkEntry.getType() == FileType.FILE_REGULAR) {
         	basePath = Constants.DOWNLOAD_BASE_PATH;
         }
         else

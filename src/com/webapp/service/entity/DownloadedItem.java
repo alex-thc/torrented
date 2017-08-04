@@ -57,7 +57,6 @@ public class DownloadedItem {
     //archive file
     private String archiveFile;
     
-    
 	public Long getEta() {
 		return eta;
 	}

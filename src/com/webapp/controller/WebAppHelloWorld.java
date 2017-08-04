@@ -85,7 +85,8 @@ public class WebAppHelloWorld {
 	
 	@RequestMapping("/download")
 	public ModelAndView download(
-			@RequestParam("file") String file, 
+			@RequestParam("file") String file,
+			@RequestParam("type") String type,
 			@CookieValue(value = "session", defaultValue = "") String sessionId) {
 	
 		//first, make sure we're logged in
@@ -100,7 +101,15 @@ public class WebAppHelloWorld {
 		}
 		
 		//generate the link entry
-		LinkEntry linkEntry = new LinkEntry(file, Constants.FileType.FILE_ARCHIVE, Constants.ARCHIVE_LINK_LIVES, user.getUsername());
+		Constants.FileType fileType;
+		if ("archive".equals(type))
+			fileType = Constants.FileType.FILE_ARCHIVE;
+		else if ("file".equals(type))
+			fileType = Constants.FileType.FILE_REGULAR;
+		else
+			return new ModelAndView("error","message","Unrecognized file type");
+		
+		LinkEntry linkEntry = new LinkEntry(file, fileType, Constants.FILE_LINK_LIVES, user.getUsername());
 		linkRepository.save(linkEntry);
 		
 		Map<String, Object> model = new HashMap<>();
