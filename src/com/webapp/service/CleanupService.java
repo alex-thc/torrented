@@ -21,9 +21,7 @@ import com.webapp.util.Util;
 public class CleanupService {
 	@Autowired
 	private ItemRepository itemRepository;
-	
-	private static final String BASE_PATH = Constants.DOWNLOAD_BASE_PATH;
-	
+		
 	private static final Integer EXPIRY_DAYS = 14;
 	
 	public void runCleanupRound() {
@@ -34,6 +32,12 @@ public class CleanupService {
 		for (DownloadedItem item : itemsToCleanup) {
 			System.out.println("CLEANUP: cleaning up " + item.getName());
 			
+			//clean up the archive
+			if (item.getArchiveFile() != null) {
+				Util.removeFromDisk(Constants.ARCHIVE_BASE_PATH, item.getArchiveFile());
+			}
+			
+			//clean up everything else
 			Set<String> filesToDelete = new HashSet<>();
 			if (item.getDownloadedFiles() != null)
 				filesToDelete.addAll(item.getDownloadedFiles());
@@ -49,29 +53,31 @@ public class CleanupService {
 			String dir = ShellCommand.getBaseDirPath(filesToDelete.iterator().next());
 			if (dir != null) //we can clean up the directory
 			{
-				String removeCmd = String.format("/usr/bin/rm -rf \'%s\'", BASE_PATH + "/" + dir);
-				System.out.println("CLEANUP: removing " + dir + " : " + removeCmd);
-				
-				try {
-					ShellCommand.executeCommand(removeCmd, "/tmp/cleanup.log");
-				} catch (ShellCommandException e) {
-					System.out.println("CLEANUP: " + e.getMessage());
-					System.out.println("CLEANUP: " + e.getCmdLine());
-					System.out.println("CLEANUP: " + e.getBufOutput());
-				}
+				Util.removeFromDisk(Constants.DOWNLOAD_BASE_PATH, dir);
+//				String removeCmd = String.format("/usr/bin/rm -rf \'%s\'", BASE_PATH + "/" + dir);
+//				System.out.println("CLEANUP: removing " + dir + " : " + removeCmd);
+//				
+//				try {
+//					ShellCommand.executeCommand(removeCmd, "/tmp/cleanup.log");
+//				} catch (ShellCommandException e) {
+//					System.out.println("CLEANUP: " + e.getMessage());
+//					System.out.println("CLEANUP: " + e.getCmdLine());
+//					System.out.println("CLEANUP: " + e.getBufOutput());
+//				}
 				
 			} else { //oops, seems like the data is in our root, so removing files 1 by 1
 				for (String file : filesToDelete) {
-					String removeCmd = String.format("/usr/bin/rm -f \'%s\'", BASE_PATH + "/" + file);
-					System.out.println("CLEANUP: removing " + file + " : " + removeCmd);
-					
-					try {
-						ShellCommand.executeCommand(removeCmd, "/tmp/cleanup.log");
-					} catch (ShellCommandException e) {
-						System.out.println("CLEANUP: " + e.getMessage());
-						System.out.println("CLEANUP: " + e.getCmdLine());
-						System.out.println("CLEANUP: " + e.getBufOutput());
-					}
+					Util.removeFromDisk(Constants.DOWNLOAD_BASE_PATH, file);
+//					String removeCmd = String.format("/usr/bin/rm -f \'%s\'", BASE_PATH + "/" + file);
+//					System.out.println("CLEANUP: removing " + file + " : " + removeCmd);
+//					
+//					try {
+//						ShellCommand.executeCommand(removeCmd, "/tmp/cleanup.log");
+//					} catch (ShellCommandException e) {
+//						System.out.println("CLEANUP: " + e.getMessage());
+//						System.out.println("CLEANUP: " + e.getCmdLine());
+//						System.out.println("CLEANUP: " + e.getBufOutput());
+//					}
 				}
 			}
 			

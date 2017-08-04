@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 
 import com.webapp.exception.InvalidMagnetLinkException;
+import com.webapp.exception.ShellCommandException;
 
 public abstract class Util {
 		
@@ -142,5 +143,18 @@ public abstract class Util {
 		FileStore fs = Files.getFileStore(new File(path).toPath());
 		
 		return (fs.getUsableSpace() >= Constants.AVAIL_SPACE_LIMIT_BYTES);
+    }
+    
+    public static void removeFromDisk(String basePath, String object) {
+    	String removeCmd = String.format("/usr/bin/rm -f \'%s\'", basePath + "/" + object);
+		System.out.println("CLEANUP: removing " + object + " : " + removeCmd);
+		
+		try {
+			ShellCommand.executeCommand(removeCmd, "/tmp/cleanup.log");
+		} catch (ShellCommandException e) {
+			System.out.println("CLEANUP: " + e.getMessage());
+			System.out.println("CLEANUP: " + e.getCmdLine());
+			System.out.println("CLEANUP: " + e.getBufOutput());
+		}
     }
 }
