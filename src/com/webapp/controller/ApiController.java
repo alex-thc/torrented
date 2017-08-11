@@ -5,18 +5,24 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.webapp.service.DownloadService;
+import com.webapp.service.Item;
 import com.webapp.service.entity.UserEntry;
 import com.webapp.service.entity.embedded.Session;
 import com.webapp.service.repository.InvitationCodeRepository;
 import com.webapp.service.repository.ItemRepository;
 import com.webapp.service.repository.LinkRepository;
 import com.webapp.service.repository.UserRepository;
+
+import nl.stil4m.transmission.rpc.RpcException;
 
 @RestController
 public class ApiController {
@@ -51,5 +57,25 @@ public class ApiController {
 		userRepository.addSessionObject(userInfo, session);
 		
 		return ResponseEntity.ok(session);
+    }
+    
+	@RequestMapping(value="/api/submitItem", method=RequestMethod.POST)
+    public ResponseEntity<String> itemSubmit(
+    		@RequestParam("newItemUri") String newItemUri,
+    		@RequestParam("sessionId") String sessionId
+    		) {		
+		UserEntry user = userRepository.findBySessionId(sessionId);
+		if (user == null) {
+			System.out.println("Failed to get user by session: " + sessionId);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		try {
+			downloadService.addItem(new Item(newItemUri), user);
+		} catch (RpcException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
+		return ResponseEntity.ok("ok");
     }
 }
