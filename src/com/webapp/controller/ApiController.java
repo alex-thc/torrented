@@ -1,6 +1,9 @@
 package com.webapp.controller;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.webapp.controller.entity.ItemStatus;
 import com.webapp.service.DownloadService;
 import com.webapp.service.Item;
+import com.webapp.service.entity.DownloadedItem;
 import com.webapp.service.entity.UserEntry;
 import com.webapp.service.entity.embedded.Session;
 import com.webapp.service.repository.InvitationCodeRepository;
@@ -78,5 +83,27 @@ public class ApiController {
 		}
 		
 		return ResponseEntity.ok(hash);
+    }
+	
+	@RequestMapping(value="/api/getItemsStatus", method=RequestMethod.POST)
+    public ResponseEntity<List<ItemStatus>> getItemsStatus(
+    		@RequestParam("itemsHashes") List<String> itemsHashes,
+    		@RequestParam("sessionId") String sessionId
+    		) {		
+		UserEntry user = userRepository.findBySessionId(sessionId);
+		if (user == null) {
+			System.out.println("Failed to get user by session: " + sessionId);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		List<DownloadedItem> items = itemRepository.findUserItemsSorted(user, itemsHashes);
+		
+		return ResponseEntity.ok(
+				items
+				.stream()
+				.map(item -> 
+				     new ItemStatus(item.getHash(), item.getPercentDone(), item.getArchiveFile()))
+				.collect(Collectors.toList())
+		);
     }
 }

@@ -14,6 +14,8 @@ public interface ItemRepositoryCustom {
 	
 	public List<DownloadedItem> findUserItemsSorted(UserEntry user, boolean isActive);
 	
+	public List<DownloadedItem> findUserItemsSorted(UserEntry user, List<String> hashes);
+	
 	public void resetAddedDate(DownloadedItem item, Date date);
 	
 	public DownloadedItem getItemActiveFlagById(String id);

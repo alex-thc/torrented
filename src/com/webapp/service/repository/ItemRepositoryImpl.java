@@ -1,8 +1,10 @@
 package com.webapp.service.repository;
 
 import java.io.NotActiveException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -99,6 +101,21 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 			return null;
 		
 		query.addCriteria(Criteria.where("hash").in(user.getTorrentHashes()).and("isActive").is(isActive));
+
+		return mongoTemplate.find(query.with(new Sort(Direction.DESC, "addedDate")), DownloadedItem.class);
+	}
+	
+	@Override
+	public List<DownloadedItem> findUserItemsSorted(UserEntry user, List<String> hashes) {
+		Query query = new Query();
+		
+		if (user.getTorrentHashes() == null)
+			return null;
+		
+		List<String> hashesToSearch = 
+		   hashes.stream().filter(hash -> user.getTorrentHashes().contains(hash)).collect(Collectors.toList());
+		
+		query.addCriteria(Criteria.where("hash").in(hashesToSearch));
 
 		return mongoTemplate.find(query.with(new Sort(Direction.DESC, "addedDate")), DownloadedItem.class);
 	}
