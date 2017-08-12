@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.webapp.controller.entity.ItemStatus;
+import com.webapp.controller.entity.ResponseList;
 import com.webapp.service.DownloadService;
 import com.webapp.service.Item;
 import com.webapp.service.entity.DownloadedItem;
@@ -85,11 +86,14 @@ public class ApiController {
 		return ResponseEntity.ok(hash);
     }
 	
-	@RequestMapping(value="/api/getItemsStatus", method=RequestMethod.POST)
-    public ResponseEntity<List<ItemStatus>> getItemsStatus(
+	@RequestMapping(value="/api/getItemsStatus")
+    public ResponseEntity<ResponseList> getItemsStatus(
     		@RequestParam("itemsHashes") List<String> itemsHashes,
     		@RequestParam("sessionId") String sessionId
-    		) {		
+    		) {	
+		
+		//System.out.println("Got request for: " + itemsHashes.toString());
+		
 		UserEntry user = userRepository.findBySessionId(sessionId);
 		if (user == null) {
 			System.out.println("Failed to get user by session: " + sessionId);
@@ -98,12 +102,15 @@ public class ApiController {
 		
 		List<DownloadedItem> items = itemRepository.findUserItemsSorted(user, itemsHashes);
 		
-		return ResponseEntity.ok(
+		ResponseList resList = new ResponseList();
+		List<Object> statuses = 
 				items
 				.stream()
 				.map(item -> 
 				     new ItemStatus(item.getHash(), item.getName(), item.getPercentDone(), item.getArchiveFile()))
-				.collect(Collectors.toList())
-		);
+				.collect(Collectors.toList());
+		resList.setList(statuses);
+		
+		return ResponseEntity.ok(resList);
     }
 }
