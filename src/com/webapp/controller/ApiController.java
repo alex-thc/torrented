@@ -70,12 +70,13 @@ public class ApiController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
+		String hash = null;
 		try {
-			downloadService.addItem(new Item(newItemUri), user);
+			hash = downloadService.addItem(new Item(newItemUri), user);
 		} catch (RpcException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		
-		return ResponseEntity.ok("ok");
+		return ResponseEntity.ok(hash);
     }
 }

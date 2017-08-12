@@ -68,7 +68,7 @@ public class DownloadService {
 		
 	}
 	
-	public void addItem(Item item, UserEntry user) throws RpcException {
+	public String addItem(Item item, UserEntry user) throws RpcException {
 		
 		//get the hash of the item first
 		String hash = null;
@@ -100,7 +100,7 @@ public class DownloadService {
 		DownloadedItem downloadedItem = itemRepository.findByHash(hash);
 		if (downloadedItem != null) {
 			itemRepository.resetAddedDate(downloadedItem, new Date()); //this will be overwritten if the download is active, but we don't care much about it
-			return;
+			return hash;
 		}
 		
 		//check if we ran out of new items
@@ -125,6 +125,7 @@ public class DownloadService {
 		
 		//store the activity entry so that we can track who creates new items
 		activityRepository.save(new ActivityEntry(Constants.ActivityType.SUBMIT_NEW_ITEM, user.getUsername()));
+		return hash;
 	}
 	
 	public List<TorrentInfo> getAllItems() throws RpcException {
