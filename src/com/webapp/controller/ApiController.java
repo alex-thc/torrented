@@ -102,7 +102,7 @@ public class ApiController {
 				items
 				.stream()
 				.map(item -> 
-				     new ItemStatus(item.getHash(), item.getPercentDone(), item.getArchiveFile()))
+				     new ItemStatus(item.getHash(), item.getName(), item.getPercentDone(), item.getArchiveFile()))
 				.collect(Collectors.toList())
 		);
     }
