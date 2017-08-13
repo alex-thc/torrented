@@ -111,7 +111,10 @@ public abstract class Util {
             input = new FileInputStream(file);
             StringBuilder builder = new StringBuilder();
             while (!builder.toString().endsWith("4:info")) {
-                builder.append((char) input.read()); // It's ASCII anyway.
+            	int c = input.read();
+            	if (c == -1) //eof, unexpectedly!
+            		throw new IOException("Torrent file is not valid");
+                builder.append((char) c); // It's ASCII anyway.
             }
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             for (int data; (data = input.read()) > -1; output.write(data));
