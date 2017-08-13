@@ -1,6 +1,8 @@
 package com.webapp.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -21,12 +23,14 @@ import com.webapp.controller.entity.ResponseList;
 import com.webapp.service.DownloadService;
 import com.webapp.service.Item;
 import com.webapp.service.entity.DownloadedItem;
+import com.webapp.service.entity.LinkEntry;
 import com.webapp.service.entity.UserEntry;
 import com.webapp.service.entity.embedded.Session;
 import com.webapp.service.repository.InvitationCodeRepository;
 import com.webapp.service.repository.ItemRepository;
 import com.webapp.service.repository.LinkRepository;
 import com.webapp.service.repository.UserRepository;
+import com.webapp.util.Constants;
 
 import nl.stil4m.transmission.rpc.RpcException;
 
@@ -112,5 +116,30 @@ public class ApiController {
 		resList.setList(statuses);
 		
 		return ResponseEntity.ok(resList);
+    }
+	
+	@RequestMapping(value="/api/getArchiveLink")
+    public ResponseEntity<String> getArchiveLink(
+    		@RequestParam("file") String file,
+    		@RequestParam("sessionId") String sessionId
+    		) {	
+				
+		UserEntry user = userRepository.findBySessionId(sessionId);
+		if (user == null) {
+			System.out.println("Failed to get user by session: " + sessionId);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (linkRepository.countNewUserLinksLast24h(user.getUsername()) >= Constants.NEW_LINKS_PER_DAY_LIMIT) {
+			return new ResponseEntity<>("Exceeded number of new links per day", HttpStatus.BAD_REQUEST);
+		}
+		
+		//generate the link entry
+		Constants.FileType fileType = Constants.FileType.FILE_ARCHIVE;
+		
+		LinkEntry linkEntry = new LinkEntry(file, fileType, Constants.FILE_LINK_LIVES, user.getUsername());
+		linkRepository.save(linkEntry);
+		
+		return ResponseEntity.ok(linkEntry.getId().toString().replaceAll("-", ""));
     }
 }
