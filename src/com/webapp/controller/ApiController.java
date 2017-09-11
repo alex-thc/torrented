@@ -142,4 +142,18 @@ public class ApiController {
 		
 		return ResponseEntity.ok(linkEntry.getId().toString().replaceAll("-", ""));
     }
+	
+	@RequestMapping(value="/api/validateSession")
+    public ResponseEntity<String> validateSession(
+    		@RequestParam("sessionId") String sessionId
+    		) {	
+				
+		UserEntry user = userRepository.findBySessionId(sessionId);
+		if (user == null) {
+			System.out.println("Failed to get user by session: " + sessionId);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		return ResponseEntity.ok("success");
+    }
 }
