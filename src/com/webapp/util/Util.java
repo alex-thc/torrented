@@ -149,7 +149,7 @@ public abstract class Util {
     }
     
     public static void removeFromDisk(String basePath, String object) {
-    	String removeCmd = String.format("/usr/bin/rm -f \'%s\'", basePath + "/" + object);
+    	String removeCmd = String.format("/usr/bin/rm -rf \'%s\'", basePath + "/" + object);
 		System.out.println("CLEANUP: removing " + object + " : " + removeCmd);
 		
 		try {
