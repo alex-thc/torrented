@@ -18,6 +18,8 @@ public class UserEntry {
 	List<String> torrentHashes; //torrent hashes that this user has access to (uppercase)
 	
     private List<Session> sessions;
+    
+    private int itemsDayLimit = Constants.NEW_ITEMS_PER_DAY_LIMIT;
 	
 	public List<String> getTorrentHashes() {
 		return torrentHashes;
@@ -53,5 +55,11 @@ public class UserEntry {
 	}
 	public void setSessions(List<Session> sessions) {
 		this.sessions = sessions;
+	}
+	public int getItemsDayLimit() {
+		return itemsDayLimit;
+	}
+	public void setItemsDayLimit(int itemsDayLimit) {
+		this.itemsDayLimit = itemsDayLimit;
 	}
 }

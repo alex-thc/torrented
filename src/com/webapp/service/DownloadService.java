@@ -104,7 +104,7 @@ public class DownloadService {
 		}
 		
 		//check if we ran out of new items
-		if (activityRepository.countNewUserItemsLast24h(user.getUsername()) >= Constants.NEW_ITEMS_PER_DAY_LIMIT)
+		if (activityRepository.countNewUserItemsLast24h(user.getUsername()) >= user.getItemsDayLimit())
 			throw new RpcException("You reached the limit of new items per day");
 		
 		//check free space
