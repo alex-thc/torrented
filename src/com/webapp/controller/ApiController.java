@@ -113,6 +113,11 @@ public class ApiController {
 				.map(item -> 
 				     new ItemStatus(item.getHash(), item.getName(), item.getPercentDone(), item.getArchiveFile()))
 				.collect(Collectors.toList());
+		if (statuses.isEmpty()) {
+			System.out.println("None of the hashes that were submitted are known on the server: " + itemsHashes.stream().collect(Collectors.joining(",")));
+			return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+		}
+		
 		resList.setList(statuses);
 		
 		return ResponseEntity.ok(resList);
